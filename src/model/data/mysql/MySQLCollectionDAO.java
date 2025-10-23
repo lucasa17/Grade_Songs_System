@@ -44,7 +44,8 @@ public class MySQLCollectionDAO implements CollectionDAO{
 		finally {
 			DAOUtils.close(preparedStatement);
 			DAOUtils.close(connection);
-		}	}
+		}	
+	}
 
 	@Override
 	public void update(Collection collection) throws ModelException {
@@ -58,7 +59,7 @@ public class MySQLCollectionDAO implements CollectionDAO{
 					+ " SET "
 					+ " collection_name = ?, "
 					+ " id_user_fk = ?, "
-					+ " WHERE id = ?; ";
+					+ " WHERE id_collection = ?; ";
 			
 			preparedStatement = connection.prepareStatement(sqlUpdate);
 			preparedStatement.setString(1, collection.getName());

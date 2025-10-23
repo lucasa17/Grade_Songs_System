@@ -10,5 +10,5 @@ public interface FeatureDAO {
 	void update(Feature feature) throws ModelException;
 	void delete(Feature feature) throws ModelException;
 	List<Feature> findAll() throws ModelException;
-    Feature findById(int id) throws ModelException;
+	List<Feature> findById(int id) throws ModelException;
 }

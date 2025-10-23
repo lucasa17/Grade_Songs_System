@@ -10,5 +10,5 @@ public interface SongDAO {
 	void update(Song song) throws ModelException;
 	void delete(Song song) throws ModelException;
 	List<Song> findAll() throws ModelException;
-    Song findById(int id) throws ModelException;
+	List<Song> findById(int id) throws ModelException;
 }
