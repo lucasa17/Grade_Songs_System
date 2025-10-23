@@ -6,6 +6,7 @@ public class User {
 	private int id;
 	private String name;
 	private String email;
+	private String password;
 	private List<Collection> collections;
 	
 	public User(int id) {
@@ -34,6 +35,14 @@ public class User {
 
 	public void setCollections(List<Collection> collections) {
 		this.collections = collections;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public int getId() {
