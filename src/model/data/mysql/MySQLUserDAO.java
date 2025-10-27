@@ -55,7 +55,7 @@ public class MySQLUserDAO implements UserDAO {
 					         + " set "
 					         + " nome = ?, "
 					         + " email = ? "
-					         + " WHERE id = ?; ";
+					         + " WHERE id_user = ?; ";
 
 			preparedStatement = connection.prepareStatement(sqlUpdate);
 			preparedStatement.setString(1, user.getName());
@@ -83,7 +83,7 @@ public class MySQLUserDAO implements UserDAO {
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 
-			String sqlUpdate = " DELETE FROM user WHERE id = ?; ";
+			String sqlUpdate = " DELETE FROM user WHERE id_user = ?; ";
 
 			preparedStatement = connection.prepareStatement(sqlUpdate);
 			preparedStatement.setInt(1, user.getId());
@@ -111,7 +111,7 @@ public class MySQLUserDAO implements UserDAO {
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 
-			String sqlSelect = "SELECT * FROM user WHERE id = ?;";
+			String sqlSelect = "SELECT * FROM user WHERE id_user = ?;";
 			preparedStatement = connection.prepareStatement(sqlSelect);
 			preparedStatement.setInt(1, id);
 

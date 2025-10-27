@@ -25,16 +25,10 @@ create table album(
 	id_album int not null auto_increment primary key,
     album_name varchar(100),
     album_year int,
+	id_collection_fk int not null,
 	id_artist_fk int not null,
+	foreign key (id_collection_fk) references collection(id_collection) on delete cascade on update cascade,
     foreign key (id_artist_fk) references artist(id_artist) on delete cascade on update cascade
-);
-
-create table collection_album(
-	id_collection_album int not null auto_increment primary key,
-    id_album_fk int not null,
-    id_collection_fk int not null,
-	foreign key (id_album_fk) references album(id_album) on delete cascade on update cascade,
- 	foreign key (id_collection_fk) references collection(id_collection) on delete cascade on update cascade   
 );
 
 create table song(

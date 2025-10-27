@@ -9,7 +9,7 @@ public interface CollectionDAO {
 	void save(Collection collection) throws ModelException;
 	void update(Collection collection) throws ModelException;
 	void delete(Collection collection) throws ModelException;
-	List<Collection> findAll() throws ModelException;
-	List<Collection> findById(int id) throws ModelException;
+	Collection findById(int collectionId) throws ModelException;
+	List<Collection> findAllById(int userId) throws ModelException;
 }
 	

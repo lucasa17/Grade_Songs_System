@@ -85,7 +85,7 @@ public class MySQLCollectionDAO implements CollectionDAO{
 		try {
 			connection = MySQLConnectionFactory.getConnection();  
 
-			String sqlDelete = "delete from collection where id = ?;";
+			String sqlDelete = "delete from collection where id_collection = ?;";
 
 			preparedStatement = connection.prepareStatement(sqlDelete);
 			preparedStatement.setInt(1, collection.getId());
@@ -98,9 +98,45 @@ public class MySQLCollectionDAO implements CollectionDAO{
 			DAOUtils.close(connection);
 		}		
 	}
+	
+	public Collection findById(int collectionId) throws ModelException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		Collection collection = null;
 
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+
+			String sqlSelect = "SELECT * FROM collection WHERE id_collection = ?;";
+			preparedStatement = connection.prepareStatement(sqlSelect);
+			preparedStatement.setInt(1, collectionId);
+
+			rs = preparedStatement.executeQuery();
+
+			if (rs.next()) {
+				String name = rs.getString("collection_name");
+				int userId = rs.getInt("id_user_fk");
+
+				collection = new Collection(collectionId);
+				collection.setName(name);
+				
+				User user = new User(userId);
+				collection.setUser(user);
+			}
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar user por id no BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+
+		return collection;
+	}
+	
 	@Override
-	public List<Collection> findById(int userId) throws ModelException {
+	public List<Collection> findAllById(int userId) throws ModelException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
@@ -122,33 +158,6 @@ public class MySQLCollectionDAO implements CollectionDAO{
 		} finally {
 			DAOUtils.close(rs);
 			DAOUtils.close(preparedStatement);
-			DAOUtils.close(connection);
-		}
-
-		return collectionList;
-	}
-
-	@Override
-	public List<Collection> findAll() throws ModelException {
-		Connection connection = null;
-		Statement statement = null;
-		ResultSet rs = null;
-		List<Collection> collectionList = new ArrayList<>();
-
-		try {
-			connection = MySQLConnectionFactory.getConnection();
-
-			statement = connection.createStatement();
-			String sqlSeletc = " SELECT * FROM posts order by post_date desc ; ";
-
-			rs = statement.executeQuery(sqlSeletc);
-
-			setUpCollections(rs, collectionList);
-		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao carregar posts do BD.", sqle);
-		} finally {
-			DAOUtils.close(rs);
-			DAOUtils.close(statement);
 			DAOUtils.close(connection);
 		}
 

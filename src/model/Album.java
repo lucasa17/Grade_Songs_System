@@ -6,6 +6,7 @@ public class Album {
 	private int id;
 	private String name;
 	private int year;
+	private Collection collection;
 	private Artist artist;
 	private List<Song> songs;
 	
@@ -36,12 +37,20 @@ public class Album {
 	public void setSongs(List<Song> songs) {
 		this.songs = songs;
 	}
+	
+	public Collection getCollection() {
+		return collection;
+	}
+
+	public void setCollection(Collection collection) {
+		this.collection = collection;
+	}
 
 	public Artist getArtist() {
 		return artist;
 	}
 
-	public void setUser(Artist artist) {
+	public void setArtist(Artist artist) {
 		this.artist = artist;
 	}
 	
