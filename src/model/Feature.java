@@ -2,19 +2,19 @@ package model;
 
 public class Feature {
 	private int id;
-	private String name;
+	private Artist artist;
 	private Song song;
 	
 	public Feature(int id) {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public Artist getArtist() {
+		return artist;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setArtist(Artist artist) {
+		this.artist = artist;
 	}
 
 	public Song getSong() {

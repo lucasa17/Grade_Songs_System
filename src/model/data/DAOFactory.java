@@ -1,7 +1,9 @@
 package model.data;
 
+import model.data.mysql.MySQLAlbumDAO;
 import model.data.mysql.MySQLArtistDAO;
 import model.data.mysql.MySQLCollectionDAO;
+import model.data.mysql.MySQLSongDAO;
 import model.data.mysql.MySQLUserDAO;
 
 public final class DAOFactory {
@@ -13,7 +15,15 @@ public final class DAOFactory {
 		return new MySQLCollectionDAO();
 	}
 
+	public static AlbumDAO createAlbumDAO() {
+		return new MySQLAlbumDAO();
+	}
+	
 	public static ArtistDAO createArtistDAO() {
 		return new MySQLArtistDAO();
+	}
+	
+	public static SongDAO createSongDAO() {
+		return new MySQLSongDAO();
 	}
 }

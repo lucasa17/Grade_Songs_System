@@ -11,7 +11,6 @@ import model.Album;
 import model.Artist;
 import model.Collection;
 import model.ModelException;
-import model.User;
 import model.data.AlbumDAO;
 import model.data.DAOFactory;
 import model.data.DAOUtils;
@@ -90,7 +89,7 @@ public class MySQLAlbumDAO implements AlbumDAO{
 		try {
 			connection = MySQLConnectionFactory.getConnection();  
 
-			String sqlDelete = "delete from album where id = ?;";
+			String sqlDelete = "delete from album where id_album = ?;";
 
 			preparedStatement = connection.prepareStatement(sqlDelete);
 			preparedStatement.setInt(1, album.getId());
@@ -102,56 +101,6 @@ public class MySQLAlbumDAO implements AlbumDAO{
 			DAOUtils.close(preparedStatement);
 			DAOUtils.close(connection);
 		}				
-	}
-
-	@Override
-	public List<Album> findAllById(int collectionId) throws ModelException {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet rs = null;
-		List<Album> albumList = new ArrayList<>();
-
-		try {
-			connection = MySQLConnectionFactory.getConnection();
-
-			String sqlSeletc = " SELECT * FROM album WHERE id_collection_fk = ?; ";
-			preparedStatement = connection.prepareStatement(sqlSeletc);
-			preparedStatement.setInt(1, collectionId);
-
-			rs = preparedStatement.executeQuery();
-
-			setUpAlbums(rs, albumList);
-
-		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao carregar Coleção do BD.", sqle);
-		} finally {
-			DAOUtils.close(rs);
-			DAOUtils.close(preparedStatement);
-			DAOUtils.close(connection);
-		}
-
-		return albumList;
-	}
-
-	private void setUpAlbums(ResultSet rs, List<Album> albumList) throws ModelException, SQLException {
-		while (rs.next()) {
-			int albumId = rs.getInt("id_album"); 
-			String albumName = rs.getString("album_name");
-			int albumYear = rs.getInt("album_year"); 
-			int artistId = rs.getInt("id_artist_fk");
-			int collectionId = rs.getInt("id_collection_fk");
-
-			Album newAlbum = new Album(albumId);
-			newAlbum.setName(albumName);
-
-			Collection albumCollection = DAOFactory.createCollectionDAO().findById(collectionId);
-			newAlbum.setCollection(albumCollection);
-			
-			Artist albumArtist = DAOFactory.createArtistDAO().findById(artistId);
-			newAlbum.setArtist(albumArtist);
-			
-			albumList.add(newAlbum);
-		}		
 	}
 
 	@Override
@@ -187,7 +136,7 @@ public class MySQLAlbumDAO implements AlbumDAO{
 				album.setArtist(artist);
 			}
 		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao buscar user por id no BD.", sqle);
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar Album por id no BD.", sqle);
 		} finally {
 			DAOUtils.close(rs);
 			DAOUtils.close(preparedStatement);
@@ -195,5 +144,56 @@ public class MySQLAlbumDAO implements AlbumDAO{
 		}
 
 		return album;
+	}
+	
+	@Override
+	public List<Album> findAllById(int collectionId) throws ModelException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		List<Album> albumList = new ArrayList<>();
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+
+			String sqlSeletc = " SELECT * FROM album WHERE id_collection_fk = ?; ";
+			preparedStatement = connection.prepareStatement(sqlSeletc);
+			preparedStatement.setInt(1, collectionId);
+
+			rs = preparedStatement.executeQuery();
+
+			setUpAlbums(rs, albumList);
+
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao carregar Albums do BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+
+		return albumList;
+	}
+	
+	private void setUpAlbums(ResultSet rs, List<Album> albumList) throws ModelException, SQLException {
+		while (rs.next()) {
+			int albumId = rs.getInt("id_album"); 
+			String albumName = rs.getString("album_name");
+			int albumYear = rs.getInt("album_year"); 
+			int artistId = rs.getInt("id_artist_fk");
+			int collectionId = rs.getInt("id_collection_fk");
+
+			Album newAlbum = new Album(albumId);
+			newAlbum.setName(albumName);
+			newAlbum.setYear(albumYear);
+
+			Collection albumCollection = DAOFactory.createCollectionDAO().findById(collectionId);
+			newAlbum.setCollection(albumCollection);
+			
+			Artist albumArtist = DAOFactory.createArtistDAO().findById(artistId);
+			newAlbum.setArtist(albumArtist);
+			
+			albumList.add(newAlbum);
+		}		
 	}
 }

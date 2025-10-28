@@ -4,11 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
-import model.Album;
 import model.Artist;
-import model.Collection;
 import model.ModelException;
 import model.data.ArtistDAO;
 import model.data.DAOUtils;
@@ -18,20 +15,80 @@ public class MySQLArtistDAO implements ArtistDAO{
 
 	@Override
 	public void save(Artist artist) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+
+			String sqlIsert = " INSERT INTO "
+					        + " artist VALUES "
+					        + " (DEFAULT, ?); ";
+
+			preparedStatement = connection.prepareStatement(sqlIsert);
+			preparedStatement.setString(1, artist.getName());
+
+			preparedStatement.executeUpdate();
+
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao inserir Artist do BD.", sqle);
+		} catch (ModelException me) {
+			throw me;
+		} 
+		finally {
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}			
 	}
 
 	@Override
 	public void update(Artist artist) throws ModelException {
-		// TODO Auto-generated method stub
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
 		
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+			
+			String sqlUpdate = " UPDATE artist "
+					+ " SET "
+					+ " artist_name = ?, "
+					+ " WHERE id_artist = ?; ";
+		
+			preparedStatement = connection.prepareStatement(sqlUpdate);
+			preparedStatement.setString(1, artist.getName());
+			preparedStatement.setInt(2, artist.getId());
+			
+			preparedStatement.executeUpdate();
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao atualizar Artist do BD.", sqle);
+		} catch (ModelException me) {
+			throw me;
+		} finally {
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}						
 	}
 
 	@Override
 	public void delete(Artist artist) throws ModelException {
-		// TODO Auto-generated method stub
-		
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();  
+
+			String sqlDelete = "delete from artist where id_artist = ?;";
+
+			preparedStatement = connection.prepareStatement(sqlDelete);
+			preparedStatement.setInt(1, artist.getId());
+
+			preparedStatement.executeUpdate();
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao excluir Artist do BD.", sqle);
+		} finally {
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}					
 	}
 
 	@Override
@@ -57,7 +114,7 @@ public class MySQLArtistDAO implements ArtistDAO{
 				artist.setName(name);
 			}
 		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao buscar user por id no BD.", sqle);
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar artist por id no BD.", sqle);
 		} finally {
 			DAOUtils.close(rs);
 			DAOUtils.close(preparedStatement);
@@ -66,11 +123,4 @@ public class MySQLArtistDAO implements ArtistDAO{
 
 		return artist;
 	}
-
-	@Override
-	public List<Artist> findAllById(int albumId) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

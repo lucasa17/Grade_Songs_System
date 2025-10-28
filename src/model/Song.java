@@ -6,6 +6,7 @@ public class Song {
 	private int id;
 	private String name;
 	private int grade;
+	private Album album;
 	private List<Feature> features;
 	
 	public Song(int id) {
@@ -28,6 +29,14 @@ public class Song {
 		this.grade = grade;
 	}
 	
+	public Album getAlbum() {
+		return album;
+	}
+
+	public void setAlbum(Album album) {
+		this.album = album;
+	}
+
 	public List<Feature> getFeatures() {
 		return features;
 	}

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class MySQLCollectionDAO implements CollectionDAO{
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao inserir Coleção do BD.", sqle);
+			DAOUtils.sqlExceptionTreatement("Erro ao inserir Collection do BD.", sqle);
 		} catch (ModelException me) {
 			throw me;
 		} 
@@ -68,7 +67,7 @@ public class MySQLCollectionDAO implements CollectionDAO{
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao atualizar Coleção do BD.", sqle);
+			DAOUtils.sqlExceptionTreatement("Erro ao atualizar Collection do BD.", sqle);
 		} catch (ModelException me) {
 			throw me;
 		} finally {
@@ -92,7 +91,7 @@ public class MySQLCollectionDAO implements CollectionDAO{
 
 			preparedStatement.executeUpdate();
 		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao excluir Coleção do BD.", sqle);
+			DAOUtils.sqlExceptionTreatement("Erro ao excluir Collection do BD.", sqle);
 		} finally {
 			DAOUtils.close(preparedStatement);
 			DAOUtils.close(connection);
@@ -125,7 +124,7 @@ public class MySQLCollectionDAO implements CollectionDAO{
 				collection.setUser(user);
 			}
 		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao buscar user por id no BD.", sqle);
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar Collection por id no BD.", sqle);
 		} finally {
 			DAOUtils.close(rs);
 			DAOUtils.close(preparedStatement);
@@ -154,7 +153,7 @@ public class MySQLCollectionDAO implements CollectionDAO{
 			setUpCollections(rs, collectionList);
 
 		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao carregar Coleção do BD.", sqle);
+			DAOUtils.sqlExceptionTreatement("Erro ao carregar Collections do BD.", sqle);
 		} finally {
 			DAOUtils.close(rs);
 			DAOUtils.close(preparedStatement);
