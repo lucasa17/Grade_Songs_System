@@ -48,4 +48,19 @@ public class User {
 	public int getId() {
 		return id;
 	}
+	
+	public void validate() {
+		if (name == null || name.isBlank()) {
+			throw new IllegalArgumentException("O nome do usuário não pode ser vazio.");
+		}
+
+		if (email == null || email.isBlank() || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+			throw new IllegalArgumentException("O email do usuário é inválido.");
+		}	
+	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 }
