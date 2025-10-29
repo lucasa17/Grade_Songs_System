@@ -22,7 +22,7 @@ public class MainView extends JFrame {
         userListItem.addActionListener(e -> new UserListView(this).setVisible(true));
         menu.add(userListItem);
         menuBar.add(menu);
-
+        
         // Menu Posts
         JMenu postMenu = new JMenu("Posts");
         JMenuItem postListItem = new JMenuItem("Listar Posts");

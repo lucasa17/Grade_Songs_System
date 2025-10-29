@@ -36,7 +36,7 @@ public class LoginView extends JDialog {
         loginBtn.addActionListener(e -> {
             String email = emailField.getText();
             String senha = new String(passwordField.getPassword());
-            if ("eac".equals(email) && "123".equals(senha)) {
+            if ("lucas@email.com".equals(email) && "123456".equals(senha)) {
                 authenticated = true;
                 dispose();
             } else {

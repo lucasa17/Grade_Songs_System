@@ -40,11 +40,6 @@ class UserFormView extends JDialog implements IUserFormView {
         add(nameField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1;
-        add(new JLabel("Sexo:"), gbc);
-        gbc.gridx = 1;
-        add(genderBox, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 2;
         add(new JLabel("Email:"), gbc);
         gbc.gridx = 1;
         add(emailField, gbc);
@@ -53,10 +48,11 @@ class UserFormView extends JDialog implements IUserFormView {
         btnPanel.add(saveButton);
         btnPanel.add(closeButton);
 
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
         add(btnPanel, gbc);
 
-        if (!isNew) setUserInForm(user);
+        if (!isNew) 
+        	setUserInForm(user);
 
         saveButton.addActionListener(e -> controller.saveOrUpdate(isNew));
         closeButton.addActionListener(e -> close());
