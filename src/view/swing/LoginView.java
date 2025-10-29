@@ -1,6 +1,12 @@
 package view.swing;
 
 import javax.swing.*;
+
+import model.ModelException;
+import model.User;
+import model.auth.LoginAuthenticator;
+import model.data.DAOUtils;
+
 import java.awt.*;
 
 public class LoginView extends JDialog {
@@ -29,14 +35,27 @@ public class LoginView extends JDialog {
 
         JPanel buttons = new JPanel();
         JButton loginBtn = new JButton("Entrar");
-        JButton cancelBtn = new JButton("Cadastre-se");
+        JButton registerBtn = new JButton("Cadastre-se");
         buttons.add(loginBtn);
-        buttons.add(cancelBtn);
+        buttons.add(registerBtn);
 
         loginBtn.addActionListener(e -> {
             String email = emailField.getText();
-            String senha = new String(passwordField.getPassword());
-            if ("lucas@email.com".equals(email) && "123456".equals(senha)) {
+            String password = new String(passwordField.getPassword());
+            
+            User user = new User(0);
+            user.setEmail(email);
+            user.setPassword(password);
+            
+            LoginAuthenticator la = new LoginAuthenticator();
+            boolean auth = false;
+				try {
+					auth = la.autheticathor(user);
+				} catch (ModelException e1) {
+	                JOptionPane.showMessageDialog(this, "Email ou senha inválidos.", "Erro", JOptionPane.ERROR_MESSAGE);
+					e1.printStackTrace();
+				}
+            if (auth) {
                 authenticated = true;
                 dispose();
             } else {
@@ -44,7 +63,7 @@ public class LoginView extends JDialog {
             }
         });
 
-        cancelBtn.addActionListener(e -> {
+        registerBtn.addActionListener(e -> {
             authenticated = false;
             dispose();
         });

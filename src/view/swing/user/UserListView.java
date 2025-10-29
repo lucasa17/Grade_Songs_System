@@ -90,7 +90,6 @@ public class UserListView extends JDialog implements IUserListView {
         add(scrollPane, BorderLayout.CENTER);
         add(panel, BorderLayout.SOUTH);
 
-        controller.loadUsers();
     }
 
     @Override
@@ -105,7 +104,6 @@ public class UserListView extends JDialog implements IUserListView {
 
     // Atualiza lista após cadastro/edição/exclusão
     public void refresh() {
-        controller.loadUsers();
     }
 
     // Tabela de usuários

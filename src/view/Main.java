@@ -11,11 +11,5 @@ public class Main {
 	
    public static void main(String[] args) throws ModelException {
 		UserDAO userDAO = DAOFactory.createUserDAO();
-	
-		List<User> users = userDAO.findAll();
-		
-		for(User user : users) {
-			System.out.println("Usuário: "+ user.getName());	
-		}
 	}	
 }

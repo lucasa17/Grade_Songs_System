@@ -115,71 +115,30 @@ public class MySQLUserDAO implements UserDAO {
 	}
 	
 	@Override
-	public User findByEmail(String email) throws ModelException {
+	public boolean findByEmailPassword(String email, String password) throws ModelException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
-		User user = null;
+		boolean found = false;
+
 		try {
 			connection = MySQLConnectionFactory.getConnection();
-			String sqlSelect = "SELECT * FROM user WHERE email = ?;";
+			String sqlSelect = "SELECT * FROM user WHERE email = ? and user_password = ?;";
 			preparedStatement = connection.prepareStatement(sqlSelect);
 			preparedStatement.setString(1, email);
+			preparedStatement.setString(2, password);
 			rs = preparedStatement.executeQuery();
 			if (rs.next()) {
-				String name = rs.getString("username");
-				String password = rs.getString("user_password");
-				int id = rs.getInt("id_user");
-				user = new User(id);
-				user.setName(name);
-				user.setEmail(email);
-				user.setPassword(password);
+				found = true;
 			}
 		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao buscar user por email no BD.", sqle);
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar user por email e password no BD.", sqle);
 		} finally {
 			DAOUtils.close(rs);
 			DAOUtils.close(preparedStatement);
 			DAOUtils.close(connection);
 		}
-		return user;
+		return found;
 	}
-	
-	public List<User> findAll() throws ModelException {
-		Connection connection = null;
-		Statement statement = null;
-		ResultSet rs = null;
-		List<User> usersList = new ArrayList<>();
-
-		try {
-			connection = MySQLConnectionFactory.getConnection();
-			statement = connection.createStatement();
-			String sqlSelect = "SELECT * FROM user";
-			rs = statement.executeQuery(sqlSelect);
-
-			while (rs.next()) {
-				int id = rs.getInt("id_user");
-				String name = rs.getString("username");
-				String email = rs.getString("email");
-				String password = rs.getString("user_password");
-
-				
-				User user = new User(id);
-				user.setName(name);
-				user.setEmail(email);
-				user.setPassword(password);
-				usersList.add(user);
-			}
-		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao carregar usuários do BD.", sqle);
-		} finally {
-			DAOUtils.close(rs);
-			DAOUtils.close(statement);
-			DAOUtils.close(connection);
-		}
-		return usersList;
-	}
-	
-	
 }
 

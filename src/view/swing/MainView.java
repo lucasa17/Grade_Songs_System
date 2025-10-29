@@ -61,9 +61,9 @@ public class MainView extends JFrame {
 
         // Tela de login antes da tela principal
         SwingUtilities.invokeLater(() -> {
-            RegisterView register = new RegisterView();
-            register.setVisible(true);
-            if (register.isAuthenticated()) {
+            LoginView login = new LoginView();
+            login.setVisible(true);
+            if (login.isAuthenticated()) {
                 MainView mainView = new MainView();
                 mainView.setVisible(true);
                 mainView.setExtendedState(JFrame.MAXIMIZED_BOTH);

@@ -13,16 +13,6 @@ public class UserController {
     private IUserListView userListView;
     private IUserFormView userFormView;
 
-    // Listagem
-    public void loadUsers() {
-        try {
-            List<User> users = userDAO.findAll();
-            userListView.setUserList(users);
-        } catch (ModelException e) {
-            userListView.showMessage("Erro ao carregar usuários: " + e.getMessage());
-        }
-    }
-
     // Salvar ou atualizar
     public void saveOrUpdate(boolean isNew) {
         User user = userFormView.getUserFromForm();
@@ -52,7 +42,6 @@ public class UserController {
         try {
             userDAO.delete(user);
             userListView.showMessage("Usuário excluído!");
-            loadUsers();
         } catch (ModelException e) {
             userListView.showMessage("Erro ao excluir: " + e.getMessage());
         }
