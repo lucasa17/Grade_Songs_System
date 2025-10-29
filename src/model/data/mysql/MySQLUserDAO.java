@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import model.ModelException;
 import model.User;
 import model.data.DAOUtils;
@@ -112,6 +114,30 @@ public class MySQLUserDAO implements UserDAO {
 			DAOUtils.close(connection);
 		}
 		return user;
+	}
+	
+	public boolean findByEmail(String email) throws ModelException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+			String sqlSelect = "SELECT * FROM user WHERE email = ?";
+			preparedStatement = connection.prepareStatement(sqlSelect);
+			preparedStatement.setString(1, email);
+			rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar user por email e password no BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+		return false;
 	}
 	
 	@Override

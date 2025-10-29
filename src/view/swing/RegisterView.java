@@ -1,6 +1,11 @@
 package view.swing;
 
 import javax.swing.*;
+
+import model.ModelException;
+import model.User;
+import model.auth.RegisterAuthenticator;
+
 import java.awt.*;
 
 public class RegisterView extends JDialog {
@@ -10,7 +15,7 @@ public class RegisterView extends JDialog {
     private final JPasswordField passwordField = new JPasswordField(20);
 
     public RegisterView() {
-        setTitle("Grade Songs System - Swing");
+        setTitle("Grade Songs System - Cadastro");
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -34,33 +39,39 @@ public class RegisterView extends JDialog {
         form.add(passwordField, gbc);
 
         JPanel buttons = new JPanel();
-        JButton loginBtn = new JButton("Cadastrar");
-        JButton cancelBtn = new JButton("Fazer login");
+        JButton registerBtn = new JButton("Cadastrar");
+        JButton loginBtn = new JButton("Fazer login");
+        buttons.add(registerBtn);
         buttons.add(loginBtn);
-        buttons.add(cancelBtn);
+
+        registerBtn.addActionListener(e -> {
+        	 String username = usernameField.getText();
+        	 String email = emailField.getText();
+             String password = new String(passwordField.getPassword());
+             
+             User user = new User(0);
+             user.setName(username);
+             user.setEmail(email);
+             user.setPassword(password);
+             RegisterAuthenticator ra = new RegisterAuthenticator();
+	         try {
+				if (ra.autheticathor(user) == false) {
+				     authenticated = true;
+				     dispose();
+				 }
+			} catch (HeadlessException | ModelException e1) {
+			     JOptionPane.showMessageDialog(this, "Email já está cadastrado.", "Erro", JOptionPane.ERROR_MESSAGE);
+			}
+        });
 
         loginBtn.addActionListener(e -> {
-            String name = usernameField.getText();
-            String email = emailField.getText();
-            String senha = new String(passwordField.getPassword());
-            
+            dispose(); 
+            SwingUtilities.invokeLater(() -> {
+                LoginView loginView = new LoginView();
+                loginView.setVisible(true);
+            });
         });
 
-        cancelBtn.addActionListener(e -> {
-        	 SwingUtilities.invokeLater(() -> {
-                 LoginView login = new LoginView();
-                 login.setVisible(true);
-
-                 this.setVisible(false);
-                 if (login.isAuthenticated()) {
-                     MainView mainView = new MainView();
-                     mainView.setVisible(true);
-                     mainView.setExtendedState(JFrame.MAXIMIZED_BOTH);
-                 } else {
-                     System.exit(0);
-                 }
-             });
-        });
 
         add(form, BorderLayout.CENTER);
         add(buttons, BorderLayout.SOUTH);

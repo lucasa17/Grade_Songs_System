@@ -63,8 +63,9 @@ public class LoginView extends JDialog {
             }
         });
 
+
         registerBtn.addActionListener(e -> {
-            authenticated = false;
+            registerRequested = true;
             dispose();
         });
 
@@ -74,6 +75,11 @@ public class LoginView extends JDialog {
         setLocationRelativeTo(null);
     }
 
+    private boolean registerRequested = false;
+    public boolean isRegisterRequested() {
+        return registerRequested;
+    }
+    
     public boolean isAuthenticated() {
         return authenticated;
     }
