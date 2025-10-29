@@ -110,7 +110,7 @@ public class UserListView extends JDialog implements IUserListView {
 
     // Tabela de usuários
     static class UserTableModel extends AbstractTableModel {
-        private final String[] columns = {"ID", "Nome", "Sexo", "Email"};
+        private final String[] columns = {"ID", "Nome", "Email"};
         private List<User> users = new ArrayList<>();
 
         public void setUsers(List<User> users) {
