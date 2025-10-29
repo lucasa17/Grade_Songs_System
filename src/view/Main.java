@@ -1,5 +1,7 @@
 package view;
 
+import java.util.List;
+
 import model.ModelException;
 import model.User;
 import model.data.DAOFactory;
@@ -10,14 +12,10 @@ public class Main {
    public static void main(String[] args) throws ModelException {
 		UserDAO userDAO = DAOFactory.createUserDAO();
 	
-		User user = userDAO.findByEmail("lucas@email.com");
+		List<User> users = userDAO.findAll();
 		
-		user.setName("Lucas Rosa");
-		userDAO.update(user);
-		
-		System.out.println(user.getName());
-		
-		
-		
-   }
+		for(User user : users) {
+			System.out.println("Usuário: "+ user.getName());	
+		}
+	}	
 }

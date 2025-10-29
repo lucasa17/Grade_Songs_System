@@ -154,7 +154,7 @@ public class MySQLUserDAO implements UserDAO {
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 			statement = connection.createStatement();
-			String sqlSelect = "SELECT * FROM users ORDER BY username;";
+			String sqlSelect = "SELECT * FROM user";
 			rs = statement.executeQuery(sqlSelect);
 
 			while (rs.next()) {
