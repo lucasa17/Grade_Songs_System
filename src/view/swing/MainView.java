@@ -10,7 +10,7 @@ public class MainView extends JFrame {
     private static final long serialVersionUID = 1L;
 
 	public MainView() {
-        setTitle("Grade Songs System - Swing");
+        setTitle("Grade Songs System - Cadastro");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -61,9 +61,9 @@ public class MainView extends JFrame {
 
         // Tela de login antes da tela principal
         SwingUtilities.invokeLater(() -> {
-            LoginView login = new LoginView();
-            login.setVisible(true);
-            if (login.isAuthenticated()) {
+            RegisterView register = new RegisterView();
+            register.setVisible(true);
+            if (register.isAuthenticated()) {
                 MainView mainView = new MainView();
                 mainView.setVisible(true);
                 mainView.setExtendedState(JFrame.MAXIMIZED_BOTH);

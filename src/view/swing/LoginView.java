@@ -29,7 +29,7 @@ public class LoginView extends JDialog {
 
         JPanel buttons = new JPanel();
         JButton loginBtn = new JButton("Entrar");
-        JButton cancelBtn = new JButton("Cancelar");
+        JButton cancelBtn = new JButton("Cadastre-se");
         buttons.add(loginBtn);
         buttons.add(cancelBtn);
 

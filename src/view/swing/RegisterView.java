@@ -5,8 +5,8 @@ import java.awt.*;
 
 public class RegisterView extends JDialog {
     private boolean authenticated = false;
-    private final JTextField usernameField = new JTextField(20);
-    private final JTextField emailField = new JTextField(20);
+    private final JTextField usernameField = new JTextField(50);
+    private final JTextField emailField = new JTextField(50);
     private final JPasswordField passwordField = new JPasswordField(20);
 
     public RegisterView() {
@@ -47,8 +47,19 @@ public class RegisterView extends JDialog {
         });
 
         cancelBtn.addActionListener(e -> {
-            authenticated = false;
-            dispose();
+        	 SwingUtilities.invokeLater(() -> {
+                 LoginView login = new LoginView();
+                 login.setVisible(true);
+
+                 this.setVisible(false);
+                 if (login.isAuthenticated()) {
+                     MainView mainView = new MainView();
+                     mainView.setVisible(true);
+                     mainView.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                 } else {
+                     System.exit(0);
+                 }
+             });
         });
 
         add(form, BorderLayout.CENTER);
