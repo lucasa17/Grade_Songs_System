@@ -10,6 +10,7 @@ import java.util.List;
 
 import model.Collection;
 import model.ModelException;
+import model.Session;
 import model.User;
 import model.data.CollectionDAO;
 import model.data.DAOFactory;
@@ -26,11 +27,12 @@ public class MySQLCollectionDAO implements CollectionDAO{
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 
-			String sqlIsert = " INSERT INTO collection (collection_name) VALUES (DEFAULT, ?)";
+			User logged = Session.getLoggedUser();
 
+			String sqlIsert = "INSERT INTO collection VALUES (DEFAULT, ?, ?)";
 			preparedStatement = connection.prepareStatement(sqlIsert);
 			preparedStatement.setString(1, collection.getName());
-
+			preparedStatement.setInt(2, collection.getUser().getId());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException sqle) {
@@ -52,12 +54,8 @@ public class MySQLCollectionDAO implements CollectionDAO{
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 			
-			String sqlUpdate = " UPDATE collection "
-					+ " SET "
-					+ " collection_name = ?, "
-					+ " id_user_fk = ?, "
-					+ " WHERE id_collection = ?; ";
-			
+			String sqlUpdate = "UPDATE collection SET collection_name = ?, id_user_fk = ? WHERE id_collection = ?";
+
 			preparedStatement = connection.prepareStatement(sqlUpdate);
 			preparedStatement.setString(1, collection.getName());
 			preparedStatement.setInt(2, collection.getUser().getId());

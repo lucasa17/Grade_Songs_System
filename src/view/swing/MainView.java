@@ -1,5 +1,7 @@
 package view.swing;
 
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+
 import view.swing.collection.CollectionListView;
 
 import javax.swing.*;
@@ -52,8 +54,8 @@ public class MainView extends JFrame {
 
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (Exception ex) {
+            UIManager.setLookAndFeel(new FlatMacDarkLaf());
+        	} catch (Exception ex) {
             ex.printStackTrace();
         }
 

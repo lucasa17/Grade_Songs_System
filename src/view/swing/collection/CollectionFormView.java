@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 
 import controller.CollectionController;
 import model.Collection;
+import model.Session;
 
 public class CollectionFormView extends JDialog implements ICollectionFormView {
 	 private final JTextField nameField = new JTextField(50);
@@ -61,8 +62,14 @@ public class CollectionFormView extends JDialog implements ICollectionFormView {
 
 	    @Override
 	    public Collection getCollectionFromForm() {
-	        if (collection == null) collection = new Collection(0);
+	        if (collection == null) {
+	            collection = new Collection(0);
+	            collection.setUser(Session.getLoggedUser());
+	        }
+
 	        collection.setName(nameField.getText());
+
+	        // 🔹 Aqui o ID e o USER continuam intactos
 	        return collection;
 	    }
 

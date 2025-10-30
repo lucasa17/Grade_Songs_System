@@ -3,9 +3,12 @@ package view.swing;
 import javax.swing.*;
 
 import model.ModelException;
+import model.Session;
 import model.User;
 import model.auth.LoginAuthenticator;
+import model.data.DAOFactory;
 import model.data.DAOUtils;
+import model.data.UserDAO;
 
 import java.awt.*;
 
@@ -15,7 +18,7 @@ public class LoginView extends JDialog {
     private final JPasswordField passwordField = new JPasswordField(20);
 
     public LoginView() {
-        setTitle("Grade Songs System - Swing");
+        setTitle("Grade Songs System - Login");
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -56,6 +59,16 @@ public class LoginView extends JDialog {
 					e1.printStackTrace();
 				}
             if (auth) {
+        		UserDAO userDAO = DAOFactory.createUserDAO();
+				int id = 0;
+				try {
+					id = userDAO.findByEmailId(user.getEmail());
+				} catch (ModelException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				user.setId(id);
+                Session.setLoggedUser(user);
                 authenticated = true;
                 dispose();
             } else {

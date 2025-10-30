@@ -30,7 +30,8 @@ public class CollectionListView extends JDialog implements ICollectionListView{
         super(parent, "Coleções", true);
         this.controller = new CollectionController();
         this.controller.setCollectionListView(this);
-
+        refresh();
+        
         setSize(650, 400);
         setLocationRelativeTo(null);
 
@@ -43,6 +44,7 @@ public class CollectionListView extends JDialog implements ICollectionListView{
 
         JButton addButton = new JButton("Adicionar Coleção");
         addButton.addActionListener(e -> {
+        	refresh();
         	CollectionFormView form = new CollectionFormView(this, null, controller);
             form.setVisible(true);
         });
@@ -56,20 +58,27 @@ public class CollectionListView extends JDialog implements ICollectionListView{
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                showPopup(e);
+                int row = table.rowAtPoint(e.getPoint());
+                if (row >= 0 && row < table.getRowCount()) {
+                    table.setRowSelectionInterval(row, row);
+                } else {
+                    table.clearSelection();
+                }
+
+                if (e.isPopupTrigger()) {
+                    showPopup(e);
+                }
             }
+
             @Override
             public void mouseReleased(MouseEvent e) {
-                showPopup(e);
-            }
-            private void showPopup(MouseEvent e) {
                 if (e.isPopupTrigger()) {
-                    int row = table.rowAtPoint(e.getPoint());
-                    if (row >= 0 && row < table.getRowCount()) {
-                        table.setRowSelectionInterval(row, row);
-                        popupMenu.show(table, e.getX(), e.getY());
-                    }
+                    showPopup(e);
                 }
+            }
+
+            private void showPopup(MouseEvent e) {
+                popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
 
@@ -80,6 +89,7 @@ public class CollectionListView extends JDialog implements ICollectionListView{
                 CollectionFormView form = new CollectionFormView(this, collection, controller);
                 form.setVisible(true);
             }
+        	refresh();
         });
 
         deleteItem.addActionListener(e -> {
@@ -89,8 +99,10 @@ public class CollectionListView extends JDialog implements ICollectionListView{
                 int confirm = JOptionPane.showConfirmDialog(this, "Excluir coleção?", "Confirmação", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     controller.deleteCollection(collection);
+                    refresh();
                 }
             }
+        	refresh();
         });
 
         JPanel panel = new JPanel(new BorderLayout());

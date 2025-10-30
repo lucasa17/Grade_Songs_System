@@ -4,6 +4,7 @@ import java.util.List;
 
 import model.Collection;
 import model.ModelException;
+import model.Session;
 import model.data.CollectionDAO;
 import model.data.DAOFactory;
 import view.swing.collection.ICollectionFormView;
@@ -29,6 +30,14 @@ public class CollectionController {
 
         try {
         	collection.validate();
+        	
+        	if (Session.isLogged()) {
+                collection.setUser(Session.getLoggedUser());
+            } else {
+                collectionFormView.showErrorMessage("Nenhum usuário logado!");
+                return;
+            }
+        	
         } catch (IllegalArgumentException e) {
         	collectionFormView.showErrorMessage("Erro de validação: " + e.getMessage());
             return;
