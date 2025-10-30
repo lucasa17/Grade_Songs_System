@@ -7,6 +7,6 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-j-9.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/41279517883/eclipse-workspace/Grade_Songs_System/lib/flatlaf-demo-3.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/flatlaf-demo-3.6.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

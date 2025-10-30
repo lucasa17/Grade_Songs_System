@@ -2,6 +2,7 @@ package view.swing;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
+import view.swing.album.AlbumListView;
 import view.swing.collection.CollectionListView;
 
 import javax.swing.*;
@@ -24,11 +25,11 @@ public class MainView extends JFrame {
         menu.add(collectionListItem);
         menuBar.add(menu);
         
-        JMenu postMenu = new JMenu("Albuns");
-        JMenuItem postListItem = new JMenuItem("Listar Albuns");
-        //postListItem.addActionListener(e -> new PostListView(this).setVisible(true));
-        postMenu.add(postListItem);
-        menuBar.add(postMenu);
+        JMenu albumMenu = new JMenu("Albuns");
+        JMenuItem albumListItem = new JMenuItem("Listar Albuns");
+        albumListItem.addActionListener(e -> new AlbumListView(this).setVisible(true));
+        albumMenu.add(albumListItem);
+        menuBar.add(albumMenu);
 
         // Adiciona um menu vazio para empurrar o próximo menu para a direita
         menuBar.add(Box.createHorizontalGlue());

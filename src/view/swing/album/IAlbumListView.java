@@ -5,6 +5,6 @@ import java.util.List;
 import model.Album;
 
 public interface IAlbumListView {
-    void setPostList(List<Album> albums);
+    void setAlbumList(List<Album> albums);
     void showMessage(String msg);
 }

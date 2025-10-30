@@ -57,4 +57,13 @@ public class Album {
 	public int getId() {
 		return id;
 	}
+	
+	public void validate() {
+		if (name == null || name.isBlank()) {
+			throw new IllegalArgumentException("O nome do album não pode ser vazio.");
+		}
+		if (year <=0) {
+			throw new IllegalArgumentException("O ano não pode ser negativo");
+		}
+	}
 }
