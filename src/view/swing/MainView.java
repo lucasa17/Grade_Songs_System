@@ -1,6 +1,6 @@
 package view.swing;
 
-import view.swing.user.UserListView;
+import view.swing.collection.CollectionListView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -10,22 +10,20 @@ public class MainView extends JFrame {
     private static final long serialVersionUID = 1L;
 
 	public MainView() {
-        setTitle("Grade Songs System - Cadastro");
+        setTitle("Grade Songs System");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JMenuBar menuBar = new JMenuBar();
 
-        // Menu Usuários
-        JMenu menu = new JMenu("Usuários");
-        JMenuItem userListItem = new JMenuItem("Listar Usuários");
-        userListItem.addActionListener(e -> new UserListView(this).setVisible(true));
-        menu.add(userListItem);
+        JMenu menu = new JMenu("Coleções");
+        JMenuItem collectionListItem = new JMenuItem("Listar Coleções");
+        collectionListItem.addActionListener(e -> new CollectionListView(this).setVisible(true));
+        menu.add(collectionListItem);
         menuBar.add(menu);
         
-        // Menu Posts
-        JMenu postMenu = new JMenu("Posts");
-        JMenuItem postListItem = new JMenuItem("Listar Posts");
+        JMenu postMenu = new JMenu("Albuns");
+        JMenuItem postListItem = new JMenuItem("Listar Albuns");
         //postListItem.addActionListener(e -> new PostListView(this).setVisible(true));
         postMenu.add(postListItem);
         menuBar.add(postMenu);

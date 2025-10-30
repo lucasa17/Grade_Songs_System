@@ -12,4 +12,5 @@ public interface AlbumDAO {
 	void delete(Album album) throws ModelException;
 	Album findById(int albumId) throws ModelException;
 	List<Album> findAllById(int collectionId) throws ModelException;
+	List<Album> findAll() throws ModelException;
 }

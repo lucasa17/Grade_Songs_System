@@ -5,6 +5,6 @@ import java.util.List;
 import model.Collection;
 
 public interface ICollectionListView {
-    void setPostList(List<Collection> collections);
+    void setCollectionList(List<Collection> collections);
     void showMessage(String msg);
 }

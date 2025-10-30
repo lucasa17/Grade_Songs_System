@@ -1,26 +1,35 @@
-package view.swing.user;
+package view.swing.collection;
 
-import controller.UserController;
-import model.User;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserListView extends JDialog implements IUserListView {
-    private UserController controller;
-    private final UserTableModel tableModel = new UserTableModel();
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+
+import controller.CollectionController;
+import model.Collection;
+
+public class CollectionListView extends JDialog implements ICollectionListView{
+	private CollectionController controller;
+    private final CollectionTableModel tableModel = new CollectionTableModel();
     private final JTable table = new JTable(tableModel);
 
-    public UserListView(JFrame parent) {
-        super(parent, "Usuários", true);
-        this.controller = new UserController();
-        this.controller.setUserListView(this);
+    public CollectionListView(JFrame parent) {
+        super(parent, "Coleções", true);
+        this.controller = new CollectionController();
+        this.controller.setCollectionListView(this);
 
         setSize(650, 400);
         setLocationRelativeTo(null);
@@ -32,9 +41,9 @@ public class UserListView extends JDialog implements IUserListView {
         table.setShowGrid(true);
         table.setGridColor(Color.LIGHT_GRAY);
 
-        JButton addButton = new JButton("Adicionar Usuário");
+        JButton addButton = new JButton("Adicionar Coleção");
         addButton.addActionListener(e -> {
-            UserFormView form = new UserFormView(this, null, controller);
+        	CollectionFormView form = new CollectionFormView(this, null, controller);
             form.setVisible(true);
         });
 
@@ -67,8 +76,8 @@ public class UserListView extends JDialog implements IUserListView {
         editItem.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row >= 0) {
-                User user = tableModel.getUserAt(row);
-                UserFormView form = new UserFormView(this, user, controller);
+                Collection collection = tableModel.getCollectionAt(row);
+                CollectionFormView form = new CollectionFormView(this, collection, controller);
                 form.setVisible(true);
             }
         });
@@ -76,10 +85,10 @@ public class UserListView extends JDialog implements IUserListView {
         deleteItem.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row >= 0) {
-                User user = tableModel.getUserAt(row);
-                int confirm = JOptionPane.showConfirmDialog(this, "Excluir usuário?", "Confirmação", JOptionPane.YES_NO_OPTION);
+            	Collection collection = tableModel.getCollectionAt(row);
+                int confirm = JOptionPane.showConfirmDialog(this, "Excluir coleção?", "Confirmação", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    controller.excluirUsuario(user);
+                    controller.deleteCollection(collection);
                 }
             }
         });
@@ -93,8 +102,8 @@ public class UserListView extends JDialog implements IUserListView {
     }
 
     @Override
-    public void setUserList(List<User> users) {
-        tableModel.setUsers(users);
+    public void setCollectionList(List<Collection> collections) {
+        tableModel.setCollections(collections);
     }
 
     @Override
@@ -102,25 +111,25 @@ public class UserListView extends JDialog implements IUserListView {
         JOptionPane.showMessageDialog(this, msg);
     }
 
-    // Atualiza lista após cadastro/edição/exclusão
     public void refresh() {
+        controller.loadCollections();
     }
 
     // Tabela de usuários
-    static class UserTableModel extends AbstractTableModel {
-        private final String[] columns = {"ID", "Nome", "Email"};
-        private List<User> users = new ArrayList<>();
+    static class CollectionTableModel extends AbstractTableModel {
+        private final String[] columns = {"Nome"};
+        private List<Collection> collections = new ArrayList<>();
 
-        public void setUsers(List<User> users) {
-            this.users = users;
+        public void setCollections(List<Collection> collections) {
+            this.collections = collections;
             fireTableDataChanged();
         }
 
-        public User getUserAt(int row) {
-            return users.get(row);
+        public Collection getCollectionAt(int row) {
+            return collections.get(row);
         }
 
-        @Override public int getRowCount() { return users.size(); }
+        @Override public int getRowCount() { return collections.size(); }
 
         @Override public int getColumnCount() { return columns.length; }
 
@@ -128,11 +137,9 @@ public class UserListView extends JDialog implements IUserListView {
 
         @Override
         public Object getValueAt(int row, int col) {
-            User u = users.get(row);
+            Collection u = collections.get(row);
             switch (col) {
-                case 0: return u.getId();
-                case 1: return u.getName();
-                case 3: return u.getEmail();
+                case 0: return u.getName();
                 default: return null;
             }
         }

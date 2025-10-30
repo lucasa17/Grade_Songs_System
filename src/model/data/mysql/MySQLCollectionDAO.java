@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +26,10 @@ public class MySQLCollectionDAO implements CollectionDAO{
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 
-			String sqlIsert = " INSERT INTO "
-					        + " collection VALUES "
-					        + " (DEFAULT, ?, ?); ";
+			String sqlIsert = " INSERT INTO collection (collection_name) VALUES (DEFAULT, ?)";
 
 			preparedStatement = connection.prepareStatement(sqlIsert);
 			preparedStatement.setString(1, collection.getName());
-			preparedStatement.setInt(2, collection.getUser().getId());
 
 			preparedStatement.executeUpdate();
 
@@ -135,20 +133,19 @@ public class MySQLCollectionDAO implements CollectionDAO{
 	}
 	
 	@Override
-	public List<Collection> findAllById(int userId) throws ModelException {
+	public List<Collection> findAll() throws ModelException {
 		Connection connection = null;
-		PreparedStatement preparedStatement = null;
+		Statement statement = null;
 		ResultSet rs = null;
 		List<Collection> collectionList = new ArrayList<>();
 
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 
-			String sqlSeletc = " SELECT * FROM collection WHERE id_user_fk = ?; ";
-			preparedStatement = connection.prepareStatement(sqlSeletc);
-			preparedStatement.setInt(1, userId);
-
-			rs = preparedStatement.executeQuery();
+			statement = connection.createStatement();
+			String sqlSeletc = " SELECT * FROM collection";
+			
+			rs = statement.executeQuery(sqlSeletc);
 
 			setUpCollections(rs, collectionList);
 
@@ -156,7 +153,7 @@ public class MySQLCollectionDAO implements CollectionDAO{
 			DAOUtils.sqlExceptionTreatement("Erro ao carregar Collections do BD.", sqle);
 		} finally {
 			DAOUtils.close(rs);
-			DAOUtils.close(preparedStatement);
+			DAOUtils.close(statement);
 			DAOUtils.close(connection);
 		}
 

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,6 +170,33 @@ public class MySQLAlbumDAO implements AlbumDAO{
 		} finally {
 			DAOUtils.close(rs);
 			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+
+		return albumList;
+	}
+	
+	public List<Album> findAll() throws ModelException {
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet rs = null;
+		List<Album> albumList = new ArrayList<>();
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+
+			statement = connection.createStatement();
+			String sqlSeletc = " SELECT * FROM album WHERE id_collection_fk = ?; ";
+
+			rs = statement.executeQuery(sqlSeletc);
+
+			setUpAlbums(rs, albumList);
+
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao carregar Albums do BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(statement);
 			DAOUtils.close(connection);
 		}
 

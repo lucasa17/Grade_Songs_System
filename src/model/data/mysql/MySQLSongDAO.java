@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,6 +170,33 @@ public class MySQLSongDAO implements SongDAO{
 		return songList;
 	}
 
+	@Override
+	public List<Song> findAll() throws ModelException {
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet rs = null;
+		List<Song> songList = new ArrayList<>();
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+
+			statement = connection.createStatement();
+			String sqlSeletc = " SELECT * FROM song order by id_song desc ; ";
+
+			rs = statement.executeQuery(sqlSeletc);
+
+			setUpSongs(rs, songList);
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao carregar songs do BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(statement);
+			DAOUtils.close(connection);
+		}
+
+		return songList;	
+	}
+	
 	private void setUpSongs(ResultSet rs, List<Song> songList) throws ModelException, SQLException {
 		while (rs.next()) {
 			int songId = rs.getInt("id_song"); 

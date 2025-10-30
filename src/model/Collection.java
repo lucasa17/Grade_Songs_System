@@ -38,4 +38,9 @@ public class Collection {
 		return id;
 	}
 	
+	public void validate() {
+		if (name == null || name.isBlank()) {
+			throw new IllegalArgumentException("O nome da Collection não pode ser vazio.");
+		}
+	}
 }
