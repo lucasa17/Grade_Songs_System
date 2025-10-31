@@ -224,4 +224,61 @@ public class MySQLAlbumDAO implements AlbumDAO{
 			albumList.add(newAlbum);
 		}		
 	}
+
+	@Override
+	public Album findByName(String albumName) throws ModelException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		Album album = null;
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+
+			String sqlSelect = "SELECT * FROM album WHERE album_name = ?";
+			preparedStatement = connection.prepareStatement(sqlSelect);
+			preparedStatement.setString(1, albumName);
+
+			rs = preparedStatement.executeQuery();
+
+			if (rs.next()) {
+				int albumId = rs.getInt("id_album");
+				album = new Album(albumId);
+				album.setName(albumName);
+			}
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar album por name no BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+
+		return album;
+	}
+
+	@Override
+	public boolean searchByName(String albumName) throws ModelException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+			String sqlSelect = "SELECT * FROM album WHERE album_name = ?";
+			preparedStatement = connection.prepareStatement(sqlSelect);
+			preparedStatement.setString(1, albumName);
+			rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar album por nome no BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+		return false;
+	}
 }

@@ -152,7 +152,7 @@ public class MySQLArtistDAO implements ArtistDAO{
 				artist.setName(artistName);
 			}
 		} catch (SQLException sqle) {
-			DAOUtils.sqlExceptionTreatement("Erro ao buscar artist por id no BD.", sqle);
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar artist por name no BD.", sqle);
 		} finally {
 			DAOUtils.close(rs);
 			DAOUtils.close(preparedStatement);

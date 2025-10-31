@@ -127,7 +127,7 @@ public class SongListView extends JDialog implements ISongListView{
     }
 
     static class SongTableModel extends AbstractTableModel {
-        private final String[] columns = {"Nome", "Artista", "Ano", "Coleção"};
+        private final String[] columns = {"Album", "Artista", "Nome", "Features"};
 
         private List<Song> songs = new ArrayList<>();
 
@@ -150,9 +150,11 @@ public class SongListView extends JDialog implements ISongListView{
         public Object getValueAt(int row, int col) {
             Song a = songs.get(row);
             switch (col) {
-                case 0: return a.getName();
-                default: return null;
-            }
+            	case 0: return (a.getAlbum() != null) ? a.getAlbum().getName() : "";
+                case 1: return (a.getAlbum() != null) ? a.getAlbum().getArtist().getName() : "";
+                case 2: return a.getName();
+                case 3: return (a.getFeatures() != null) ? a.getFeatures() : "";
+                default: return null;            }
         }
         @Override public boolean isCellEditable(int row, int col) { return false; }
     }

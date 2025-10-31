@@ -4,6 +4,7 @@ import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 import view.swing.album.AlbumListView;
 import view.swing.collection.CollectionListView;
+import view.swing.song.SongListView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,17 +20,23 @@ public class MainView extends JFrame {
 
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu menu = new JMenu("Coleções");
+        JMenu collectionMenu = new JMenu("Coleções");
         JMenuItem collectionListItem = new JMenuItem("Listar Coleções");
         collectionListItem.addActionListener(e -> new CollectionListView(this).setVisible(true));
-        menu.add(collectionListItem);
-        menuBar.add(menu);
+        collectionMenu.add(collectionListItem);
+        menuBar.add(collectionMenu);
         
         JMenu albumMenu = new JMenu("Albuns");
         JMenuItem albumListItem = new JMenuItem("Listar Albuns");
         albumListItem.addActionListener(e -> new AlbumListView(this).setVisible(true));
         albumMenu.add(albumListItem);
         menuBar.add(albumMenu);
+        
+        JMenu songMenu = new JMenu("Músicas");
+        JMenuItem songListItem = new JMenuItem("Listar Músicas");
+        songListItem.addActionListener(e -> new SongListView(this).setVisible(true));
+        songMenu.add(songListItem);
+        menuBar.add(songMenu);
 
         // Adiciona um menu vazio para empurrar o próximo menu para a direita
         menuBar.add(Box.createHorizontalGlue());

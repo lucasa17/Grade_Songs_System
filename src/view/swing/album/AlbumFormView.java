@@ -52,18 +52,18 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
 
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0; gbc.gridy = 0;
         add(new JLabel("Coleção:"), gbc);
         gbc.gridx = 1;
         collectionBox.setEditable(true); 
         add(collectionBox, gbc);
         
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0; gbc.gridy = 1;
         add(new JLabel("Nome:"), gbc);
         gbc.gridx = 1;
         add(nameField, gbc);
         
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0; gbc.gridy = 2;
         add(new JLabel("Ano:"), gbc);
         gbc.gridx = 1;
         add(yearField, gbc);

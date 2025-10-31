@@ -6,14 +6,18 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import model.Song;
+import model.Album;
 import model.Artist;
 import model.Collection;
+import model.Feature;
 import model.ModelException;
 import model.User;
 import model.data.SongDAO;
+import model.data.AlbumDAO;
 import model.data.ArtistDAO;
 import model.data.CollectionDAO;
 import model.data.DAOFactory;
+import model.data.FeatureDAO;
 import model.data.UserDAO;
 import view.swing.song.ISongFormView;
 import view.swing.song.ISongListView;
@@ -75,70 +79,78 @@ public class SongController extends JDialog  {
         this.songListView = songListView;
     }
     
-    public List<Collection> findAllCollections() throws ModelException {
-        CollectionDAO collectionDAO = DAOFactory.createCollectionDAO();
-        return collectionDAO.findAll();
+    public List<Album> findAllAlbums() throws ModelException {
+        AlbumDAO albumDAO = DAOFactory.createAlbumDAO();
+        return albumDAO.findAll();
     }
     
-    public List<Artist> findAllArtists() throws ModelException {
-        ArtistDAO artistDAO = DAOFactory.createArtistDAO();
-        return artistDAO.findAll();
+    public List<Feature> findAllFeatures() throws ModelException {
+        try {
+            return featureDAO.findAll();
+        } catch (Exception e) {
+            throw new ModelException("Erro ao buscar features: " + e.getMessage(), e);
+        }
     }
     
-	ArtistDAO artistDAO = DAOFactory.createArtistDAO();
-	
-	 public Artist searchArtist(Artist artist) {
+	AlbumDAO albumDAO = DAOFactory.createAlbumDAO();
+	 public Album searchAlbum(Album album) {
     	try {
-			boolean condition = artistDAO.searchByName(artist.getName());
+			boolean condition = albumDAO.searchByName(album.getName());
 			if(condition == true)
-				return artistDAO.findByName(artist.getName());
+				return albumDAO.findByName(album.getName());
 		} catch (ModelException e) {
 			JOptionPane.showMessageDialog(this,
-                    "Problema ao buscar artista.",
+                    "Problema ao buscar album.",
                     "Erro",
                     JOptionPane.ERROR_MESSAGE);			
 		}
-    	return saveArtist(artist);
+    	return saveAlbum(album);
 	 }
 	 
-    private Artist saveArtist(Artist artist) {
+    private Album saveAlbum(Album album) {
         try {
-			artistDAO.save(artist);
-			artist = artistDAO.findByName(artist.getName());
+        	albumDAO.save(album);
+        	album = albumDAO.findByName(album.getName());
 		} catch (ModelException e) {
 			JOptionPane.showMessageDialog(this,
-                    "Problema ao salvar artista.",
+                    "Problema ao salvar album.",
                     "Erro",
                     JOptionPane.ERROR_MESSAGE);			
 		}
-        return artist;
+        return album;
     }
     
-	CollectionDAO collectionDAO = DAOFactory.createCollectionDAO();
-    public Collection searchCollection(Collection collection) {
-    	try {
-			boolean condition = collectionDAO.searchByName(collection.getName());
-			if(condition == true)
-				return collectionDAO.findByName(collection.getName());
-		} catch (ModelException e) {
-			JOptionPane.showMessageDialog(this,
-                    "Problema ao buscar coleção.",
+    FeatureDAO featureDAO = DAOFactory.createFeatureDAO();
+    public Feature searchFeature(Feature feature) {
+        try {
+            // Tenta buscar a feature pelo nome
+            Feature found = featureDAO.findByName(feature.getArtist().getName());
+            if (found != null) {
+                return found; // se encontrada, retorna
+            }
+            // Se não encontrada, salva e retorna a nova feature
+            return saveFeature(feature);
+        } catch (ModelException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Problema ao buscar ou salvar feature: " + e.getMessage(),
                     "Erro",
-                    JOptionPane.ERROR_MESSAGE);			
-		}
-    	return saveCollection(collection);
+                    JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
     }
 
-    public Collection saveCollection(Collection collection) {
+    private Feature saveFeature(Feature feature) {
         try {
-        	collectionDAO.save(collection);
-			collection = collectionDAO.findByName(collection.getName());
-		} catch (ModelException e) {
-			JOptionPane.showMessageDialog(this,
-                    "Problema ao salvar coleção.",
+            featureDAO.save(feature);
+            // Retorna a feature salva (recuperando do DB para pegar o ID)
+            return featureDAO.findByName(feature.getArtist().getName());
+        } catch (ModelException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Problema ao salvar feature: " + e.getMessage(),
                     "Erro",
-                    JOptionPane.ERROR_MESSAGE);			
-		}
-        return collection;
+                    JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
     }
+
 }

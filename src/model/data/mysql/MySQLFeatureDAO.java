@@ -184,4 +184,22 @@ public class MySQLFeatureDAO implements FeatureDAO{
 		}		
 	}
 
+	@Override
+	public Feature findByName(String featureName) throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean searchByName(String featureName) throws ModelException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List<Feature> findAll() throws ModelException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

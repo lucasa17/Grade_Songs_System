@@ -66,4 +66,9 @@ public class Album {
 			throw new IllegalArgumentException("O ano não pode ser negativo");
 		}
 	}
+	
+	@Override
+	public String toString() {
+	    return this.getName();
+	}
 }
