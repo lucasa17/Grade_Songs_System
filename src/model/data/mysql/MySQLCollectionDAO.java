@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Artist;
 import model.Collection;
 import model.ModelException;
 import model.Session;
@@ -27,8 +28,7 @@ public class MySQLCollectionDAO implements CollectionDAO{
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 
-			User logged = Session.getLoggedUser();
-
+	        collection.setUser(Session.getLoggedUser());
 			String sqlIsert = "INSERT INTO collection VALUES (DEFAULT, ?, ?)";
 			preparedStatement = connection.prepareStatement(sqlIsert);
 			preparedStatement.setString(1, collection.getName());
@@ -121,6 +121,38 @@ public class MySQLCollectionDAO implements CollectionDAO{
 			}
 		} catch (SQLException sqle) {
 			DAOUtils.sqlExceptionTreatement("Erro ao buscar Collection por id no BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+
+		return collection;
+	}
+	
+	@Override
+	public Collection findByName(String collectionName) throws ModelException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		Collection collection = null;
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+
+			String sqlSelect = "SELECT * FROM collection WHERE collection_name = ?";
+			preparedStatement = connection.prepareStatement(sqlSelect);
+			preparedStatement.setString(1, collectionName);
+
+			rs = preparedStatement.executeQuery();
+
+			if (rs.next()) {
+				int collectionId = rs.getInt("id_collection");
+				collection = new Collection(collectionId);
+				collection.setName(collectionName);
+			}
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar artist por id no BD.", sqle);
 		} finally {
 			DAOUtils.close(rs);
 			DAOUtils.close(preparedStatement);

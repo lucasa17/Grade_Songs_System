@@ -19,4 +19,9 @@ public class Artist {
 	public int getId() {
 		return id;
 	}
+	
+	@Override
+	public String toString() {
+	    return this.getName(); // ou o campo que representa o nome da coleção
+	}
 }

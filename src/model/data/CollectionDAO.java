@@ -11,6 +11,7 @@ public interface CollectionDAO {
 	void update(Collection collection) throws ModelException;
 	void delete(Collection collection) throws ModelException;
 	Collection findById(int collectionId) throws ModelException;
+	Collection findByName(String collectionName) throws ModelException;
 	List<Collection> findAll() throws ModelException;
 }
 	

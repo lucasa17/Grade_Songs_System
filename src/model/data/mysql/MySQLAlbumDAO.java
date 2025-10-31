@@ -186,7 +186,7 @@ public class MySQLAlbumDAO implements AlbumDAO{
 			connection = MySQLConnectionFactory.getConnection();
 
 			statement = connection.createStatement();
-			String sqlSeletc = " SELECT * FROM album WHERE id_collection_fk = ?; ";
+			String sqlSeletc = " SELECT * FROM album";
 
 			rs = statement.executeQuery(sqlSeletc);
 

@@ -95,7 +95,7 @@ public class AlbumListView extends JDialog implements IAlbumListView{
             int row = table.getSelectedRow();
             if (row >= 0) {
             	Album album = tableModel.getAlbumAt(row);
-                int confirm = JOptionPane.showConfirmDialog(this, "Excluir coleção?", "Confirmação", JOptionPane.YES_NO_OPTION);
+                int confirm = JOptionPane.showConfirmDialog(this, "Excluir album?", "Confirmação", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     controller.deleteAlbum(album);
                     refresh();
@@ -126,9 +126,9 @@ public class AlbumListView extends JDialog implements IAlbumListView{
         controller.loadAlbums();
     }
 
-    // Tabela de usuários
     static class AlbumTableModel extends AbstractTableModel {
-        private final String[] columns = {"Nome"};
+        private final String[] columns = {"Nome", "Artista", "Ano", "Coleção"};
+
         private List<Album> albums = new ArrayList<>();
 
         public void setAlbums(List<Album> albums) {
@@ -151,6 +151,9 @@ public class AlbumListView extends JDialog implements IAlbumListView{
             Album a = albums.get(row);
             switch (col) {
                 case 0: return a.getName();
+                case 1: return (a.getArtist() != null) ? a.getArtist().getName() : "";
+                case 2: return a.getYear();
+                case 3: return (a.getCollection() != null) ? a.getCollection().getName() : "";
                 default: return null;
             }
         }

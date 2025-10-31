@@ -43,4 +43,9 @@ public class Collection {
 			throw new IllegalArgumentException("O nome da Collection não pode ser vazio.");
 		}
 	}
+	
+	@Override
+	public String toString() {
+	    return this.getName(); // ou o campo que representa o nome da coleção
+	}
 }
