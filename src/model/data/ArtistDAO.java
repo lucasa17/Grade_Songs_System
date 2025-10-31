@@ -11,5 +11,6 @@ public interface ArtistDAO {
 	void delete(Artist artist) throws ModelException;
 	Artist findById(int artistId) throws ModelException;
 	Artist findByName(String artistName) throws ModelException;
+	boolean searchByName(String artistName) throws ModelException;
 	List<Artist> findAll() throws ModelException;
 }

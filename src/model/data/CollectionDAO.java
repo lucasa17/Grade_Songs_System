@@ -4,7 +4,6 @@ import java.util.List;
 
 import model.Collection;
 import model.ModelException;
-import model.Song;
 
 public interface CollectionDAO {
 	void save(Collection collection) throws ModelException;
@@ -12,6 +11,7 @@ public interface CollectionDAO {
 	void delete(Collection collection) throws ModelException;
 	Collection findById(int collectionId) throws ModelException;
 	Collection findByName(String collectionName) throws ModelException;
+	boolean searchByName(String collectionName) throws ModelException;
 	List<Collection> findAll() throws ModelException;
 }
 	

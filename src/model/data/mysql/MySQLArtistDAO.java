@@ -203,4 +203,29 @@ public class MySQLArtistDAO implements ArtistDAO{
 			artistList.add(newArtist);
 		}
 	}
+
+	@Override
+	public boolean searchByName(String artistName) throws ModelException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+			String sqlSelect = "SELECT * FROM artist WHERE artist_name = ?";
+			preparedStatement = connection.prepareStatement(sqlSelect);
+			preparedStatement.setString(1, artistName);
+			rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar artist por nome no BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+		return false;
+	}
 }

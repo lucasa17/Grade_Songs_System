@@ -208,4 +208,29 @@ public class MySQLCollectionDAO implements CollectionDAO{
 		}
 	}
 
+	@Override
+	public boolean searchByName(String collectionName) throws ModelException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+			String sqlSelect = "SELECT * FROM collection WHERE collection_name = ?";
+			preparedStatement = connection.prepareStatement(sqlSelect);
+			preparedStatement.setString(1, collectionName);
+			rs = preparedStatement.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao buscar collection por nome no BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+		return false;
+	}
+
 }

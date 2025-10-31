@@ -50,7 +50,7 @@ public class AlbumController extends JDialog  {
             } else {
             	albumDAO.update(album);
             }
-            albumFormView.showInfoMessage("Coleção salvo com sucesso!");
+            albumFormView.showInfoMessage("Album salvo com sucesso!");
             albumFormView.close();
         } catch (ModelException e) {
         	albumFormView.showErrorMessage("Erro ao salvar: " + e.getMessage());
@@ -61,7 +61,7 @@ public class AlbumController extends JDialog  {
     public void deleteAlbum(Album album) {
         try {
             albumDAO.delete(album);
-            albumListView.showMessage("Coleção excluída!");
+            albumListView.showMessage("Album excluído!");
         } catch (ModelException e) {
         	albumListView.showMessage("Erro ao excluir: " + e.getMessage());
         }
@@ -85,8 +85,23 @@ public class AlbumController extends JDialog  {
         return artistDAO.findAll();
     }
     
-    public Artist saveArtist(Artist artist) {
-    	ArtistDAO artistDAO = DAOFactory.createArtistDAO();
+	ArtistDAO artistDAO = DAOFactory.createArtistDAO();
+	
+	 public Artist searchArtist(Artist artist) {
+    	try {
+			boolean condition = artistDAO.searchByName(artist.getName());
+			if(condition == true)
+				return artistDAO.findByName(artist.getName());
+		} catch (ModelException e) {
+			JOptionPane.showMessageDialog(this,
+                    "Problema ao buscar artista.",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);			
+		}
+    	return saveArtist(artist);
+	 }
+	 
+    private Artist saveArtist(Artist artist) {
         try {
 			artistDAO.save(artist);
 			artist = artistDAO.findByName(artist.getName());
@@ -99,8 +114,22 @@ public class AlbumController extends JDialog  {
         return artist;
     }
     
+	CollectionDAO collectionDAO = DAOFactory.createCollectionDAO();
+    public Collection searchCollection(Collection collection) {
+    	try {
+			boolean condition = collectionDAO.searchByName(collection.getName());
+			if(condition == true)
+				return collectionDAO.findByName(collection.getName());
+		} catch (ModelException e) {
+			JOptionPane.showMessageDialog(this,
+                    "Problema ao buscar coleção.",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);			
+		}
+    	return saveCollection(collection);
+    }
+
     public Collection saveCollection(Collection collection) {
-    	CollectionDAO collectionDAO = DAOFactory.createCollectionDAO();
         try {
         	collectionDAO.save(collection);
 			collection = collectionDAO.findByName(collection.getName());

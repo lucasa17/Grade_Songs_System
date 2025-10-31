@@ -108,7 +108,7 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
 
         } catch (ModelException e) {
             JOptionPane.showMessageDialog(this,
-                    "Erro ao carregar coleções: " + e.getMessage(),
+                    "Erro ao carregar albuns: " + e.getMessage(),
                     "Erro",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -128,7 +128,7 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
 
         } catch (ModelException e) {
             JOptionPane.showMessageDialog(this,
-                    "Erro ao carregar coleções: " + e.getMessage(),
+                    "Erro ao carregar albuns: " + e.getMessage(),
                     "Erro",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -163,7 +163,7 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
             selectedCollection = new Collection(0);
             selectedCollection.setName(newName);
             
-            selectedCollection = controller.saveCollection(selectedCollection);
+            selectedCollection = controller.searchCollection(selectedCollection);
         }
         album.setCollection(selectedCollection);      
 
@@ -177,7 +177,7 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
             selectedArtist = new Artist(0);
             selectedArtist.setName(newName);
    
-            selectedArtist = controller.saveArtist(selectedArtist);
+            selectedArtist = controller.searchArtist(selectedArtist);
         }
         
         album.setArtist(selectedArtist);   
