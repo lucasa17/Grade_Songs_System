@@ -1,4 +1,4 @@
-package view.swing.album;
+package view.swing.song;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,37 +13,34 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import controller.AlbumController;
-import model.Album;
+import controller.SongController;
+import model.Song;
 import model.Artist;
 import model.Collection;
 import model.ModelException;
-import model.data.ArtistDAO;
-import model.data.CollectionDAO;
-import model.data.DAOFactory;
 
-public class AlbumFormView extends JDialog implements IAlbumFormView {
+public class SongFormView extends JDialog implements ISongFormView {
 	private final JComboBox<Collection> collectionBox = new JComboBox<>();
 	private final JTextField nameField = new JTextField(50);
 	private final JTextField yearField = new JTextField(4);
 	private final JComboBox<Artist> artistBox = new JComboBox<>();
 	private final JButton saveButton = new JButton("Salvar");
 	private final JButton closeButton = new JButton("Fechar");
-	private AlbumController controller;
+	private SongController controller;
 	private final boolean isNew;
-	private final AlbumListView parent;
-	private Album album;
+	private final SongListView parent;
+	private Song song;
 
-    public AlbumFormView(AlbumListView parent, Album album, AlbumController controller) {
+    public SongFormView(SongListView parent, Song song, SongController controller) {
         super(parent, true);
         this.controller = controller;
-        this.controller.setAlbumFormView(this);
+        this.controller.setSongFormView(this);
 
         this.parent = parent;
-        this.album = album;
-        this.isNew = (album == null);
+        this.song = song;
+        this.isNew = (song == null);
 
-        setTitle(isNew ? "Novo Album" : "Editar Album");
+        setTitle(isNew ? "Novo Song" : "Editar Song");
         setSize(350, 220);
         setLocationRelativeTo(parent);
         setLayout(new GridBagLayout());
@@ -82,7 +79,7 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
         add(btnPanel, gbc);
 
         if (!isNew) 
-        	setAlbumInForm(album);
+        	setSongInForm(song);
 
         carregarCollections();
         carregarArtists();
@@ -132,23 +129,12 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
     }
     
     @Override
-    public Album getAlbumFromForm() {
-        if (album == null) {
-            album = new Album(0);
+    public Song getSongFromForm() {
+        if (song == null) {
+            song = new Song(0);
         }
 
-        album.setName(nameField.getText());
-
-        try {
-            int ano = Integer.parseInt(yearField.getText());
-            album.setYear(ano);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this,
-                    "Ano inválido. Digite um número inteiro.",
-                    "Erro",
-                    JOptionPane.ERROR_MESSAGE);
-            return null;
-        }
+        song.setName(nameField.getText());
 
         Object selectedCollectionItem = collectionBox.getSelectedItem();
         Collection selectedCollection = null;
@@ -162,7 +148,7 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
             
             selectedCollection = controller.searchCollection(selectedCollection);
         }
-        album.setCollection(selectedCollection);      
+        //song.setCollection(selectedCollection);      
 
         Object selectedArtistItem = artistBox.getSelectedItem();
         Artist selectedArtist = null;
@@ -177,14 +163,14 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
             selectedArtist = controller.searchArtist(selectedArtist);
         }
         
-        album.setArtist(selectedArtist);   
+        //song.setArtist(selectedArtist);   
 
-        return album;
+        return song;
     }
 
     @Override
-    public void setAlbumInForm(Album album) {
-        nameField.setText(album.getName());
+    public void setSongInForm(Song song) {
+        nameField.setText(song.getName());
     }
 
     @Override

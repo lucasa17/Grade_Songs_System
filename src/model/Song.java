@@ -49,4 +49,17 @@ public class Song {
 		return id;
 	}
 	
+	public void validate() {
+		if (name == null || name.isBlank()) {
+			throw new IllegalArgumentException("O nome da Song não pode ser vazio.");
+		}
+		if (grade < 0) {
+			throw new IllegalArgumentException("A grade da Song não pode ser menor que 0.");
+		}
+	}
+	
+	@Override
+	public String toString() {
+	    return this.getName();
+	}
 }
