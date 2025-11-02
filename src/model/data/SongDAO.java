@@ -2,7 +2,6 @@ package model.data;
 
 import java.util.List;
 
-import model.Artist;
 import model.ModelException;
 import model.Song;
 

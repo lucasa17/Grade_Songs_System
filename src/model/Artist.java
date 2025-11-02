@@ -22,6 +22,6 @@ public class Artist {
 	
 	@Override
 	public String toString() {
-	    return this.getName(); // ou o campo que representa o nome da coleção
+	    return this.getName();
 	}
 }

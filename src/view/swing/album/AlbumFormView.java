@@ -84,14 +84,14 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
         if (!isNew) 
         	setAlbumInForm(album);
 
-        carregarCollections();
-        carregarArtists();
+        loadCollections();
+        loadArtists();
 
         saveButton.addActionListener(e -> controller.saveOrUpdate(isNew));
         closeButton.addActionListener(e -> close());
     }
 
-    private void carregarCollections() {
+    private void loadCollections() {
         try {
         	
             List<Collection> collections = controller.findAllCollections();
@@ -111,7 +111,7 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
         }
     }
     
-    private void carregarArtists() {
+    private void loadArtists() {
         try {
         	
             List<Artist> artists = controller.findAllArtists();
@@ -185,6 +185,29 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
     @Override
     public void setAlbumInForm(Album album) {
         nameField.setText(album.getName());
+        yearField.setText(String.valueOf(album.getYear()));
+        
+        Collection albumCollection = album.getCollection();
+        if (albumCollection != null) {
+            for (int i = 0; i < collectionBox.getItemCount(); i++) {
+                Collection c = collectionBox.getItemAt(i);
+                if (c.getId() == albumCollection.getId()) { // compara pelo ID
+                    collectionBox.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+
+        Artist albumArtist = album.getArtist();
+        if (albumArtist != null) {
+            for (int i = 0; i < artistBox.getItemCount(); i++) {
+                Artist a = artistBox.getItemAt(i);
+                if (a.getId() == albumArtist.getId()) { 
+                    artistBox.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
     }
 
     @Override

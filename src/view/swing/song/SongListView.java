@@ -22,12 +22,12 @@ import controller.SongController;
 import model.Song;
 
 public class SongListView extends JDialog implements ISongListView{
-	private SongController controller;
+	private static SongController controller;
     private final SongTableModel tableModel = new SongTableModel();
     private final JTable table = new JTable(tableModel);
 
     public SongListView(JFrame parent) {
-        super(parent, "Albuns", true);
+        super(parent, "Músicas", true);
         this.controller = new SongController();
         this.controller.setSongListView(this);
         refresh();
@@ -42,7 +42,7 @@ public class SongListView extends JDialog implements ISongListView{
         table.setShowGrid(true);
         table.setGridColor(Color.LIGHT_GRAY);
 
-        JButton addButton = new JButton("Adicionar Coleção");
+        JButton addButton = new JButton("Adicionar Música");
         addButton.addActionListener(e -> {
         	SongFormView form = new SongFormView(this, null, controller);
             form.setVisible(true);
@@ -95,7 +95,7 @@ public class SongListView extends JDialog implements ISongListView{
             int row = table.getSelectedRow();
             if (row >= 0) {
             	Song song = tableModel.getSongAt(row);
-                int confirm = JOptionPane.showConfirmDialog(this, "Excluir song?", "Confirmação", JOptionPane.YES_NO_OPTION);
+                int confirm = JOptionPane.showConfirmDialog(this, "Excluir música?", "Confirmação", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     controller.deleteSong(song);
                     refresh();
@@ -127,7 +127,7 @@ public class SongListView extends JDialog implements ISongListView{
     }
 
     static class SongTableModel extends AbstractTableModel {
-        private final String[] columns = {"Album", "Artista", "Nome", "Features"};
+        private final String[] columns = {"Nome", "Artista", "Features", "Album", "Nota"};
 
         private List<Song> songs = new ArrayList<>();
 
@@ -148,12 +148,14 @@ public class SongListView extends JDialog implements ISongListView{
 
         @Override
         public Object getValueAt(int row, int col) {
-            Song a = songs.get(row);
+            Song s = songs.get(row);
+            String artistName = controller.searchNameArtist(s.getAlbum());
             switch (col) {
-            	case 0: return (a.getAlbum() != null) ? a.getAlbum().getName() : "";
-                case 1: return (a.getAlbum() != null) ? a.getAlbum().getArtist().getName() : "";
-                case 2: return a.getName();
-                case 3: return (a.getFeatures() != null) ? a.getFeatures() : "";
+            	case 0: return s.getName();
+                case 1: return artistName;
+                case 2: return (s.getFeatures() != null) ? s.getFeatures() : "";
+            	case 3: return (s.getAlbum() != null) ? s.getAlbum().getName() : "";
+            	case 4: return s.getGrade();
                 default: return null;            }
         }
         @Override public boolean isCellEditable(int row, int col) { return false; }

@@ -28,12 +28,13 @@ public class MySQLSongDAO implements SongDAO{
 
 			String sqlIsert = " INSERT INTO "
 					        + " song VALUES "
-					        + " (DEFAULT, ?, ?, ?); ";
+					        + " (DEFAULT, ?, ?, ?, ?); ";
 
 			preparedStatement = connection.prepareStatement(sqlIsert);
 			preparedStatement.setString(1, song.getName());
 			preparedStatement.setInt(2, song.getGrade());
-			preparedStatement.setInt(3, song.getAlbum().getId());
+			preparedStatement.setString(3, song.getFeatures());
+			preparedStatement.setInt(4, song.getAlbum().getId());
 
 			preparedStatement.executeUpdate();
 
@@ -56,18 +57,14 @@ public class MySQLSongDAO implements SongDAO{
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 			
-			String sqlUpdate = " UPDATE song "
-					+ " SET "
-					+ " song_name = ?, "
-					+ " grade = ?"
-					+ " id_album_fk = ?, "
-					+ " WHERE id_song = ?; ";
+			String sqlUpdate = " UPDATE song SET song_name = ?, grade = ?, feature_name = ?, id_album_fk = ? WHERE id_song = ?; ";
 			
 			preparedStatement = connection.prepareStatement(sqlUpdate);
 			preparedStatement.setString(1, song.getName());
 			preparedStatement.setInt(2, song.getGrade());
-			preparedStatement.setInt(3, song.getAlbum().getId());
-			preparedStatement.setInt(4, song.getId());
+			preparedStatement.setString(3, song.getFeatures());
+			preparedStatement.setInt(4, song.getAlbum().getId());
+			preparedStatement.setInt(5, song.getId());
 			
 			preparedStatement.executeUpdate();
 		} catch (SQLException sqle) {
@@ -120,11 +117,13 @@ public class MySQLSongDAO implements SongDAO{
 
 			if (rs.next()) {
 				String name = rs.getString("song_name");
+				String featuresName = rs.getString("feature_name");
 				int grade = rs.getInt("grade");
 				int albumId = rs.getInt("id_album_fk");
 
 				song = new Song(songId);
 				song.setName(name);
+				song.setFeatures(featuresName);
 				song.setGrade(grade);
 				
 				Album album = new Album(albumId);
@@ -181,7 +180,7 @@ public class MySQLSongDAO implements SongDAO{
 			connection = MySQLConnectionFactory.getConnection();
 
 			statement = connection.createStatement();
-			String sqlSeletc = " SELECT * FROM song order by id_song desc ; ";
+			String sqlSeletc = "SELECT * FROM song order by id_song desc ; ";
 
 			rs = statement.executeQuery(sqlSeletc);
 
@@ -201,11 +200,13 @@ public class MySQLSongDAO implements SongDAO{
 		while (rs.next()) {
 			int songId = rs.getInt("id_song"); 
 			String songName = rs.getString("song_name");
+			String featuresName = rs.getString("feature_name");
 			int songGrade = rs.getInt("grade"); 
 			int albumId = rs.getInt("id_album_fk");
 			
 			Song newSong = new Song(songId);
 			newSong.setName(songName);
+			newSong.setFeatures(featuresName);
 			newSong.setGrade(songGrade);
 			
 			Album SongAlbum = DAOFactory.createAlbumDAO().findById(albumId);

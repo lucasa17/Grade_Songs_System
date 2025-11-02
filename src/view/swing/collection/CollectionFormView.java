@@ -69,7 +69,6 @@ public class CollectionFormView extends JDialog implements ICollectionFormView {
 
 	        collection.setName(nameField.getText());
 
-	        // 🔹 Aqui o ID e o USER continuam intactos
 	        return collection;
 	    }
 

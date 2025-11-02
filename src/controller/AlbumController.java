@@ -28,7 +28,7 @@ public class AlbumController extends JDialog  {
             List<Album> albums = albumDAO.findAll();
             albumListView.setAlbumList(albums);
         } catch (ModelException e) {
-        	albumListView.showMessage("Erro ao carregar Albums: " + e.getMessage());
+        	albumListView.showMessage("Erro ao carregar Albuns: " + e.getMessage());
         }
     }
     

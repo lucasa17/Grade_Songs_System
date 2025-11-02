@@ -20,7 +20,7 @@ public class CollectionController {
             List<Collection> collections = collectionDAO.findAll();
             collectionListView.setCollectionList(collections);
         } catch (ModelException e) {
-        	collectionListView.showMessage("Erro ao carregar Collections: " + e.getMessage());
+        	collectionListView.showMessage("Erro ao carregar Coleções: " + e.getMessage());
         }
     }
     

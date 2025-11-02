@@ -7,7 +7,7 @@ public class Song {
 	private String name;
 	private int grade;
 	private Album album;
-	private List<Feature> features;
+	private String features;
 	
 	public Song(int id) {
 		this.id = id;
@@ -37,11 +37,11 @@ public class Song {
 		this.album = album;
 	}
 
-	public List<Feature> getFeatures() {
+	public String getFeatures() {
 		return features;
 	}
 
-	public void setFeatures(List<Feature> features) {
+	public void setFeatures(String features) {
 		this.features = features;
 	}
 
@@ -54,7 +54,13 @@ public class Song {
 			throw new IllegalArgumentException("O nome da Song não pode ser vazio.");
 		}
 		if (grade < 0) {
-			throw new IllegalArgumentException("A grade da Song não pode ser menor que 0.");
+			setGrade(0);
+		}
+		if (grade > 100) {
+			setGrade(100);
+		}
+		if (features == null || features.isBlank()) {
+			features = " ";
 		}
 	}
 	

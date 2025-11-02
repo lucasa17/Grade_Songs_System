@@ -173,7 +173,7 @@ public class MySQLCollectionDAO implements CollectionDAO{
 			connection = MySQLConnectionFactory.getConnection();
 
 			statement = connection.createStatement();
-			String sqlSeletc = " SELECT * FROM collection";
+			String sqlSeletc = " SELECT * FROM collection order by collection_name desc";
 			
 			rs = statement.executeQuery(sqlSeletc);
 

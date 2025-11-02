@@ -3,7 +3,6 @@ package model.data;
 import model.data.mysql.MySQLAlbumDAO;
 import model.data.mysql.MySQLArtistDAO;
 import model.data.mysql.MySQLCollectionDAO;
-import model.data.mysql.MySQLFeatureDAO;
 import model.data.mysql.MySQLSongDAO;
 import model.data.mysql.MySQLUserDAO;
 
@@ -26,9 +25,5 @@ public final class DAOFactory {
 	
 	public static SongDAO createSongDAO() {
 		return new MySQLSongDAO();
-	}
-	
-	public static FeatureDAO createFeatureDAO() {
-		return new MySQLFeatureDAO();
 	}
 }

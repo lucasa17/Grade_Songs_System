@@ -35,14 +35,7 @@ create table song(
 	id_song int not null auto_increment primary key,
     song_name varchar(100),
     grade int,
+	feature_name varchar(255),
 	id_album_fk int not null,
 	foreign key (id_album_fk) references album(id_album) on delete cascade on update cascade
-);
-
-create table feature(
-	id_feature int not null auto_increment primary key,
-    id_song_fk int not null,
-    id_artist_fk int not null,
-	foreign key (id_song_fk) references song(id_song) on delete cascade on update cascade,
-	foreign key (id_artist_fk) references artist(id_artist) on delete cascade on update cascade
 );
