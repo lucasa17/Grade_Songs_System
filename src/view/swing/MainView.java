@@ -51,7 +51,6 @@ public class MainView extends JFrame {
         JMenu menuSair = new JMenu("...");
         
         JMenuItem sairItem = new JMenuItem("Excluir conta");
-
         sairItem.addActionListener(e -> {
 	        int confirm = JOptionPane.showConfirmDialog(this, 
 	             "Deseja excluir sua conta?", "Confirmação", JOptionPane.YES_NO_OPTION);

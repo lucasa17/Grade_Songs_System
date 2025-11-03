@@ -2,7 +2,6 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -99,8 +98,7 @@ public class SongController extends JDialog {
             albumDAO.save(album);
             return albumDAO.findByName(album.getName());
         } catch (ModelException e) {
-            JOptionPane.showMessageDialog(this, "Problema ao salvar album.", "Erro",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Problema ao salvar album.", "Erro", JOptionPane.ERROR_MESSAGE);
             return album;
         }
     }
@@ -155,13 +153,55 @@ public class SongController extends JDialog {
 
     public List<Song> getSongsOrderedByGrade(boolean ascending) throws ModelException {
         List<Song> songs = songDAO.findAll();
+
         songs.sort((s1, s2) -> {
-            double g1 = s1.getGrade();
+            double g1 = s1.getGrade(); 
             double g2 = s2.getGrade();
+
             return ascending ? Double.compare(g1, g2) : Double.compare(g2, g1);
+        });
+
+        return songs;
+    }
+    
+    public List<Song> getSongsOrderedByName(boolean ascending) throws ModelException {
+        List<Song> songs = songDAO.findAll();
+        songs.sort((s1, s2) -> {
+            String n1 = s1.getName();
+            String n2 = s2.getName();
+            return ascending ? n1.compareToIgnoreCase(n2) : n2.compareToIgnoreCase(n1);
         });
         return songs;
     }
 
+    public List<Song> getSongsOrderedByArtist(boolean ascending) throws ModelException {
+        List<Song> songs = songDAO.findAll();
+        songs.sort((s1, s2) -> {
+            String a1 = searchNameArtist(s1.getAlbum());
+            String a2 = searchNameArtist(s2.getAlbum());
+            return ascending ? a1.compareToIgnoreCase(a2) : a2.compareToIgnoreCase(a1);
+        });
+        return songs;
+    }
+    
+    public List<Song> getSongsOrderedByAlbum(boolean ascending) throws ModelException {
+        List<Song> songs = songDAO.findAll();
+        songs.sort((s1, s2) -> {
+            String al1 = (s1.getAlbum() != null) ? s1.getAlbum().getName() : "";
+            String al2 = (s2.getAlbum() != null) ? s2.getAlbum().getName() : "";
+            return ascending ? al1.compareToIgnoreCase(al2) : al2.compareToIgnoreCase(al1);
+        });
+        return songs;
+    }
+
+    public List<Song> getSongsOrderedByFeatures(boolean ascending) throws ModelException {
+        List<Song> songs = songDAO.findAll();
+        songs.sort((s1, s2) -> {
+            String f1 = (s1.getFeatures() != null) ? s1.getFeatures() : "";
+            String f2 = (s2.getFeatures() != null) ? s2.getFeatures() : "";
+            return ascending ? f1.compareToIgnoreCase(f2) : f2.compareToIgnoreCase(f1);
+        });
+        return songs;
+    }
 
 }

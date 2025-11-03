@@ -50,27 +50,47 @@ public class SongListView extends JDialog implements ISongListView{
         }
         
         table.setRowHeight(36);
-
+/*
         table.setAutoCreateRowSorter(true);
         table.getTableHeader().addMouseListener(new MouseAdapter() {
-            boolean ascending = true;
-
+            
+        	boolean ascending = true;
             @Override
             public void mouseClicked(MouseEvent e) {
                 int column = table.columnAtPoint(e.getPoint());
                 String columnName = table.getColumnName(column);
 
-                if (columnName.equals("Nota")) {
-                    ascending = !ascending; 
-                    List<Song> orderedSongs = null;
-					try {
-						orderedSongs = controller.getSongsOrderedByGrade(ascending);
-					} catch (ModelException e1) {
-					}
-                    tableModel.setSongs(orderedSongs);
+                ascending = !ascending;
+
+                List<Song> orderedSongs = new ArrayList<>();
+                try {
+                    switch(columnName) {
+                        case "Nome":
+                            orderedSongs = controller.getSongsOrderedByName(ascending);
+                            break;
+                        case "Artista":
+                            orderedSongs = controller.getSongsOrderedByArtist(ascending);
+                            break;
+                        case "Features":
+                            orderedSongs = controller.getSongsOrderedByFeatures(ascending);
+                            break;
+                        case "Album":
+                            orderedSongs = controller.getSongsOrderedByAlbum(ascending);
+                            break;
+                        case "Nota":
+                            orderedSongs = controller.getSongsOrderedByGrade(ascending);
+                            break;
+                    }
+                } catch (ModelException ex) {
+                    JOptionPane.showMessageDialog(SongListView.this, 
+                        "Erro ao ordenar a lista: " + ex.getMessage(),
+                        "Erro", JOptionPane.ERROR_MESSAGE);
                 }
+
+                tableModel.setSongs(orderedSongs);
             }
         });
+*/
         
         table.setShowGrid(true);
         table.setGridColor(Color.LIGHT_GRAY);

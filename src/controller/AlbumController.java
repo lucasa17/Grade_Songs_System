@@ -9,12 +9,10 @@ import model.Album;
 import model.Artist;
 import model.Collection;
 import model.ModelException;
-import model.User;
 import model.data.AlbumDAO;
 import model.data.ArtistDAO;
 import model.data.CollectionDAO;
 import model.data.DAOFactory;
-import model.data.UserDAO;
 import view.swing.album.IAlbumFormView;
 import view.swing.album.IAlbumListView;
 
