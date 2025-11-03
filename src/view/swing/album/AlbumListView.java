@@ -6,39 +6,71 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import controller.AlbumController;
 import model.Album;
+import model.ModelException;
+import model.Song;
+import view.swing.song.SongListView;
 
-public class AlbumListView extends JDialog implements IAlbumListView{
-	private AlbumController controller;
+public class AlbumListView extends JDialog implements IAlbumListView {
+    private AlbumController controller;
     private final AlbumTableModel tableModel = new AlbumTableModel();
     private final JTable table = new JTable(tableModel);
 
     public AlbumListView(JFrame parent) {
-        super(parent, "Albuns", true);
+        super(parent, "Álbuns", true);
         this.controller = new AlbumController();
         this.controller.setAlbumListView(this);
         refresh();
-        
+
         setSize(650, 450);
         setLocationRelativeTo(null);
 
         JScrollPane scrollPane = new JScrollPane(table);
         table.setRowHeight(36);
+        
+        table.setAutoCreateRowSorter(true);
+        table.getTableHeader().addMouseListener(new MouseAdapter() {
+            
+        	boolean ascending = true;
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int column = table.columnAtPoint(e.getPoint());
+                String columnName = table.getColumnName(column);
+
+                ascending = !ascending;
+
+                List<Album> orderedAlbums = new ArrayList<>();
+                try {
+                    switch(columnName) {
+                        case "Nome":
+                        	orderedAlbums = controller.getAlbumsOrderedByName(ascending);
+                            break;
+                        case "Artista":
+                        	orderedAlbums = controller.getAlbumsOrderedByArtist(ascending);
+                            break;
+                        case "Ano":
+                        	orderedAlbums = controller.getAlbumsOrderedByYear(ascending);
+                            break;
+                        case "Coleção":
+                        	orderedAlbums = controller.getAlbumsOrderedByCollection(ascending);
+                            break;
+                    }
+                } catch (ModelException ex) {
+                    JOptionPane.showMessageDialog(AlbumListView.this, 
+                        "Erro ao ordenar a lista: " + ex.getMessage(),
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+
+                tableModel.setAlbums(orderedAlbums);
+                refresh();
+            }
+        });
+        
         table.setShowGrid(true);
         table.setGridColor(Color.LIGHT_GRAY);
 
@@ -48,7 +80,7 @@ public class AlbumListView extends JDialog implements IAlbumListView{
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        JButton addButton = new JButton("Adicionar Coleção");
+        JButton addButton = new JButton("Adicionar Álbum");
         addButton.addActionListener(e -> {
             AlbumFormView form = new AlbumFormView(this, null, controller);
             form.setVisible(true);
@@ -69,17 +101,12 @@ public class AlbumListView extends JDialog implements IAlbumListView{
                 } else {
                     table.clearSelection();
                 }
-
-                if (e.isPopupTrigger()) {
-                    showPopup(e);
-                }
+                if (e.isPopupTrigger()) showPopup(e);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    showPopup(e);
-                }
+                if (e.isPopupTrigger()) showPopup(e);
             }
 
             private void showPopup(MouseEvent e) {
@@ -88,26 +115,29 @@ public class AlbumListView extends JDialog implements IAlbumListView{
         });
 
         editItem.addActionListener(e -> {
-            int row = table.getSelectedRow();
-            if (row >= 0) {
-                Album album = tableModel.getAlbumAt(row);
+            int viewRow = table.getSelectedRow();
+            if (viewRow >= 0) {
+                int modelRow = table.convertRowIndexToModel(viewRow);
+
+                Album album = tableModel.getAlbumAt(modelRow);
                 AlbumFormView form = new AlbumFormView(this, album, controller);
                 form.setVisible(true);
+                refresh();
             }
-        	refresh();
         });
 
         deleteItem.addActionListener(e -> {
-            int row = table.getSelectedRow();
-            if (row >= 0) {
-            	Album album = tableModel.getAlbumAt(row);
-                int confirm = JOptionPane.showConfirmDialog(this, "Excluir album?", "Confirmação", JOptionPane.YES_NO_OPTION);
+            int viewRow = table.getSelectedRow();
+            if (viewRow >= 0) {
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                
+                Album album = tableModel.getAlbumAt(modelRow);
+                int confirm = JOptionPane.showConfirmDialog(this, "Excluir álbum?", "Confirmação", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     controller.deleteAlbum(album);
                     refresh();
                 }
             }
-        	refresh();
         });
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -116,6 +146,47 @@ public class AlbumListView extends JDialog implements IAlbumListView{
         add(scrollPane, BorderLayout.CENTER);
         add(panel, BorderLayout.SOUTH);
 
+        JPanel filterPanel = new JPanel();
+        filterPanel.setBackground(Color.DARK_GRAY);
+
+        JTextField nameField = new JTextField(8);
+        JTextField artistField = new JTextField(8);
+        JTextField collectionField = new JTextField(8);
+
+        JButton filterButton = new JButton("Filtrar");
+        JButton clearButton = new JButton("Limpar");
+
+        filterPanel.add(new JLabel("Nome:"));
+        filterPanel.add(nameField);
+        filterPanel.add(new JLabel("Artista:"));
+        filterPanel.add(artistField);
+        filterPanel.add(new JLabel("Coleção:"));
+        filterPanel.add(collectionField);
+        filterPanel.add(filterButton);
+        filterPanel.add(clearButton);
+
+        add(filterPanel, BorderLayout.NORTH);
+
+        filterButton.addActionListener(e -> {
+            String name = nameField.getText().trim();
+            String artist = artistField.getText().trim();
+            String collection = collectionField.getText().trim();
+
+            try {
+                List<Album> filtered = controller.searchAlbums(name, artist, collection);
+                tableModel.setAlbums(filtered);
+            } catch (ModelException ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao filtrar álbuns: " + ex.getMessage(),
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        clearButton.addActionListener(e -> {
+            nameField.setText("");
+            artistField.setText("");
+            collectionField.setText("");
+            refresh();
+        });
     }
 
     @Override
@@ -134,7 +205,6 @@ public class AlbumListView extends JDialog implements IAlbumListView{
 
     static class AlbumTableModel extends AbstractTableModel {
         private final String[] columns = {"Nome", "Artista", "Ano", "Coleção"};
-
         private List<Album> albums = new ArrayList<>();
 
         public void setAlbums(List<Album> albums) {
@@ -147,9 +217,7 @@ public class AlbumListView extends JDialog implements IAlbumListView{
         }
 
         @Override public int getRowCount() { return albums.size(); }
-
         @Override public int getColumnCount() { return columns.length; }
-
         @Override public String getColumnName(int col) { return columns[col]; }
 
         @Override
@@ -163,6 +231,7 @@ public class AlbumListView extends JDialog implements IAlbumListView{
                 default: return null;
             }
         }
+
         @Override public boolean isCellEditable(int row, int col) { return false; }
     }
 }

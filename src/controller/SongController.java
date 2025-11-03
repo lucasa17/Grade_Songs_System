@@ -1,6 +1,8 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -152,14 +154,28 @@ public class SongController extends JDialog {
     }
 
     public List<Song> getSongsOrderedByGrade(boolean ascending) throws ModelException {
-        List<Song> songs = songDAO.findAll();
+        List<Song> songs = new ArrayList<>(songDAO.findAll());
 
-        songs.sort((s1, s2) -> {
-            double g1 = s1.getGrade(); 
-            double g2 = s2.getGrade();
+        Comparator<Song> gradeComparator = (s1, s2) -> {
+            Double g1 = (double) s1.getGrade();
+            Double g2 = (double) s2.getGrade();
 
-            return ascending ? Double.compare(g1, g2) : Double.compare(g2, g1);
-        });
+            return Double.compare(g1, g2);
+        };
+
+        // Critério secundário para empates (nome, case-insensitive) — torna o resultado estável
+        Comparator<Song> nameComparator = Comparator.comparing(
+                s -> s.getName() == null ? "" : s.getName().toLowerCase(),
+                Comparator.naturalOrder()
+        );
+
+        Comparator<Song> fullComparator = gradeComparator.thenComparing(nameComparator);
+
+        songs.sort(fullComparator);
+
+        if (!ascending) {
+            Collections.reverse(songs);
+        }
 
         return songs;
     }

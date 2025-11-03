@@ -58,12 +58,7 @@ public class MySQLAlbumDAO implements AlbumDAO{
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 			
-			String sqlUpdate = " UPDATE album "
-					+ " SET "
-					+ " album_name = ?, "
-					+ " album_year = ?"
-					+ " id_artist_fk = ?, "
-					+ " WHERE id_album = ?; ";
+			String sqlUpdate = " UPDATE album SET album_name = ?, album_year = ?, id_artist_fk = ? WHERE id_album = ?; ";
 			
 			preparedStatement = connection.prepareStatement(sqlUpdate);
 			preparedStatement.setString(1, album.getName());

@@ -62,7 +62,6 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
         add(new JLabel("Coleção:"), gbc);
 
         gbc.gridy++;
-        collectionBox.setEditable(true);
         collectionBox.setPreferredSize(new Dimension(300, 28));
         add(collectionBox, gbc);
 

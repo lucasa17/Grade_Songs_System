@@ -75,11 +75,12 @@ public class SongFormView extends JDialog implements ISongFormView {
         gradeField.setPreferredSize(new Dimension(100, 30));
         featureField.setPreferredSize(new Dimension(400, 30));
 
+        loadAlbums();
+
         if (!isNew) {
             setSongInForm(song);
         }
 
-        loadAlbums();
 
         saveButton.addActionListener(e -> controller.saveOrUpdate(isNew));
         closeButton.addActionListener(e -> close());

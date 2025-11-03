@@ -50,7 +50,7 @@ public class SongListView extends JDialog implements ISongListView{
         }
         
         table.setRowHeight(36);
-/*
+
         table.setAutoCreateRowSorter(true);
         table.getTableHeader().addMouseListener(new MouseAdapter() {
             
@@ -88,9 +88,10 @@ public class SongListView extends JDialog implements ISongListView{
                 }
 
                 tableModel.setSongs(orderedSongs);
+                refresh();
             }
         });
-*/
+
         
         table.setShowGrid(true);
         table.setGridColor(Color.LIGHT_GRAY);
@@ -135,19 +136,26 @@ public class SongListView extends JDialog implements ISongListView{
         });
 
         editItem.addActionListener(e -> {
-            int row = table.getSelectedRow();
-            if (row >= 0) {
-                Song song = tableModel.getSongAt(row);
+            int viewRow = table.getSelectedRow();
+            if (viewRow >= 0) {
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                
+                Song song = tableModel.getSongAt(modelRow);
                 SongFormView form = new SongFormView(this, song, controller);
                 form.setVisible(true);
+                
+                refresh();
             }
-        	refresh();
         });
 
+
         deleteItem.addActionListener(e -> {
+            int viewRow = table.getSelectedRow();
             int row = table.getSelectedRow();
             if (row >= 0) {
-            	Song song = tableModel.getSongAt(row);
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                
+            	Song song = tableModel.getSongAt(modelRow);
                 int confirm = JOptionPane.showConfirmDialog(this, "Excluir música?", "Confirmação", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     controller.deleteSong(song);

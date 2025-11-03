@@ -10,18 +10,23 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import controller.CollectionController;
 import model.Collection;
+import model.ModelException;
+import model.Song;
+import view.swing.song.SongListView;
 
 public class CollectionListView extends JDialog implements ICollectionListView{
 	private CollectionController controller;
@@ -39,6 +44,37 @@ public class CollectionListView extends JDialog implements ICollectionListView{
 
         JScrollPane scrollPane = new JScrollPane(table);
         table.setRowHeight(36);
+        
+        table.setAutoCreateRowSorter(true);
+        table.getTableHeader().addMouseListener(new MouseAdapter() {
+            
+        	boolean ascending = true;
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int column = table.columnAtPoint(e.getPoint());
+                String columnName = table.getColumnName(column);
+
+                ascending = !ascending;
+
+                List<Collection> orderedColelctions = new ArrayList<>();
+                try {
+                    switch(columnName) {
+                        case "Nome":
+                        	orderedColelctions = controller.getCollectionsOrderedByName(ascending);
+                            break;
+                    }
+                } catch (ModelException ex) {
+                    JOptionPane.showMessageDialog(CollectionListView.this, 
+                        "Erro ao ordenar a lista: " + ex.getMessage(),
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+
+                tableModel.setCollections(orderedColelctions);
+                refresh();
+            }
+        });
+
+        
         table.setShowGrid(true);
         table.setGridColor(Color.LIGHT_GRAY);
 
@@ -90,9 +126,11 @@ public class CollectionListView extends JDialog implements ICollectionListView{
         });
 
         editItem.addActionListener(e -> {
-            int row = table.getSelectedRow();
-            if (row >= 0) {
-                Collection collection = tableModel.getCollectionAt(row);
+        	int viewRow = table.getSelectedRow();
+            if (viewRow >= 0) {
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                
+                Collection collection = tableModel.getCollectionAt(modelRow);
                 CollectionFormView form = new CollectionFormView(this, collection, controller);
                 form.setVisible(true);
             }
@@ -100,9 +138,12 @@ public class CollectionListView extends JDialog implements ICollectionListView{
         });
 
         deleteItem.addActionListener(e -> {
+        	int viewRow = table.getSelectedRow();
             int row = table.getSelectedRow();
             if (row >= 0) {
-            	Collection collection = tableModel.getCollectionAt(row);
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                
+            	Collection collection = tableModel.getCollectionAt(modelRow);
                 int confirm = JOptionPane.showConfirmDialog(this, "Excluir coleção?", "Confirmação", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     controller.deleteCollection(collection);
@@ -117,6 +158,37 @@ public class CollectionListView extends JDialog implements ICollectionListView{
 
         add(scrollPane, BorderLayout.CENTER);
         add(panel, BorderLayout.SOUTH);
+
+        JPanel filterPanel = new JPanel();
+        filterPanel.setBackground(Color.DARK_GRAY);
+
+        JTextField nameField = new JTextField(15);
+        JButton filterButton = new JButton("Filtrar");
+        JButton clearButton = new JButton("Limpar");
+
+        filterPanel.add(new JLabel("Nome:"));
+        filterPanel.add(nameField);
+        filterPanel.add(filterButton);
+        filterPanel.add(clearButton);
+
+        add(filterPanel, BorderLayout.NORTH);
+
+        filterButton.addActionListener(e -> {
+            String name = nameField.getText().trim();
+
+            try {
+                List<Collection> filtered = controller.searchCollections(name);
+                tableModel.setCollections(filtered);
+            } catch (ModelException ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao filtrar coleções: " + ex.getMessage(),
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        clearButton.addActionListener(e -> {
+            nameField.setText("");
+            refresh();
+        });
 
     }
 
