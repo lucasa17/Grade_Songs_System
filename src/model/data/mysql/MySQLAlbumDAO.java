@@ -186,7 +186,7 @@ public class MySQLAlbumDAO implements AlbumDAO{
 			connection = MySQLConnectionFactory.getConnection();
 
 			statement = connection.createStatement();
-			String sqlSeletc = " SELECT * FROM album order by album_name desc";
+			String sqlSeletc = " SELECT * FROM album order by album_name asc";
 
 			rs = statement.executeQuery(sqlSeletc);
 

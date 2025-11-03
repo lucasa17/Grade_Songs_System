@@ -32,7 +32,7 @@ public class AlbumListView extends JDialog implements IAlbumListView{
         this.controller.setAlbumListView(this);
         refresh();
         
-        setSize(650, 400);
+        setSize(650, 450);
         setLocationRelativeTo(null);
 
         JScrollPane scrollPane = new JScrollPane(table);

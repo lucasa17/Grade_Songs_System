@@ -150,7 +150,7 @@ public class MySQLSongDAO implements SongDAO{
 		try {
 			connection = MySQLConnectionFactory.getConnection();
 
-			String sqlSeletc = " SELECT * FROM song WHERE id_album_fk = ?; ";
+			String sqlSeletc = " SELECT * FROM song WHERE id_album_fk = ? order by song_name asc ";
 			preparedStatement = connection.prepareStatement(sqlSeletc);
 			preparedStatement.setInt(1, albumId);
 
@@ -180,7 +180,7 @@ public class MySQLSongDAO implements SongDAO{
 			connection = MySQLConnectionFactory.getConnection();
 
 			statement = connection.createStatement();
-			String sqlSeletc = "SELECT * FROM song order by id_song desc ; ";
+			String sqlSeletc = "SELECT * FROM song order by song_name asc ; ";
 
 			rs = statement.executeQuery(sqlSeletc);
 

@@ -2,6 +2,8 @@ package view.swing;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
+import controller.UserController;
+import model.Session;
 import view.swing.album.AlbumListView;
 import view.swing.collection.CollectionListView;
 import view.swing.song.SongListView;
@@ -12,6 +14,8 @@ import java.awt.*;
 
 public class MainView extends JFrame {
     private static final long serialVersionUID = 1L;
+
+    private UserController controller;
 
 	public MainView() {
         setTitle("Grade Songs System");
@@ -42,16 +46,19 @@ public class MainView extends JFrame {
         menuBar.add(Box.createHorizontalGlue());
 
         // Menu "Sair" alinhado à direita
-        JMenu menuSair = new JMenu("...");
+        /*JMenu menuSair = new JMenu("...");
         JMenuItem sairItem = new JMenuItem("Fechar o sistema");
         sairItem.addActionListener(e -> System.exit(0));
         menuSair.add(sairItem);
         menuBar.add(menuSair);
-
+		*/
         setJMenuBar(menuBar);
-
-        JLabel label = new JLabel("Seja bem-vindo!", SwingConstants.CENTER);
-
+        
+        UserController controller = new UserController();
+        String username = controller.searchNameUser(Session.getLoggedUser().getId());
+        
+        JLabel label = new JLabel("Seja bem-vindo, " + username + "!", SwingConstants.CENTER);
+        
         // Painel com padding
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(32, 32, 32, 32)); // padding de 32px

@@ -32,7 +32,7 @@ public class CollectionListView extends JDialog implements ICollectionListView{
         this.controller.setCollectionListView(this);
         refresh();
         
-        setSize(650, 400);
+        setSize(650, 450);
         setLocationRelativeTo(null);
 
         JScrollPane scrollPane = new JScrollPane(table);

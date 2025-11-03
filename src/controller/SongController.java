@@ -1,6 +1,8 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -122,4 +124,47 @@ public class SongController extends JDialog {
             
         return artist.getName();
     }
+    
+    public List<Song> searchSongs(String name, String artist, String album) throws ModelException {
+        List<Song> allSongs = songDAO.findAll(); // ou controller.loadSongs(), conforme seu código
+        List<Song> filteredSongs = new ArrayList<>();
+
+        for (Song s : allSongs) {
+            boolean matches = true;
+
+            if (name != null && !name.isEmpty() &&
+                !s.getName().toLowerCase().contains(name.toLowerCase())) {
+                matches = false;
+            }
+
+            String artistName = searchNameArtist(s.getAlbum());
+            if (artist != null && !artist.isEmpty() &&
+                (artistName == null || !artistName.toLowerCase().contains(artist.toLowerCase()))) {
+                matches = false;
+            }
+
+            if (album != null && !album.isEmpty() &&
+                (s.getAlbum() == null || !s.getAlbum().getName().toLowerCase().contains(album.toLowerCase()))) {
+                matches = false;
+            }
+
+            if (matches) {
+                filteredSongs.add(s);
+            }
+        }
+
+        return filteredSongs;
+    }
+
+    public List<Song> getSongsOrderedByGrade(boolean ascending) throws ModelException {
+        List<Song> songs = songDAO.findAll();
+        songs.sort((s1, s2) -> {
+            double g1 = s1.getGrade();
+            double g2 = s2.getGrade();
+            return ascending ? Double.compare(g1, g2) : Double.compare(g2, g1);
+        });
+        return songs;
+    }
+
+
 }

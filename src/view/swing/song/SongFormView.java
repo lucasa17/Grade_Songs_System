@@ -1,5 +1,6 @@
 package view.swing.song;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -15,9 +16,9 @@ import model.ModelException;
 public class SongFormView extends JDialog implements ISongFormView {
 
     private final JComboBox<Album> albumBox = new JComboBox<>();
-    private final JTextField nameField = new JTextField(50);
+    private final JTextField nameField = new JTextField(100);
     private final JTextField gradeField = new JTextField(3);
-    private final JTextField featureField = new JTextField(50);
+    private final JTextField featureField = new JTextField(100);
     private final JButton saveButton = new JButton("Salvar");
     private final JButton closeButton = new JButton("Fechar");
 
@@ -33,9 +34,9 @@ public class SongFormView extends JDialog implements ISongFormView {
         this.parent = parent;
         this.song = song;
         this.isNew = (song == null);
-
+        
         setTitle(isNew ? "Nova Música" : "Editar Música");
-        setSize(400, 300);
+        setSize(300, 250);
         setLocationRelativeTo(parent);
         setLayout(new GridBagLayout());
 

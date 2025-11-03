@@ -10,15 +10,18 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
 
 import controller.SongController;
+import model.ModelException;
 import model.Song;
 
 public class SongListView extends JDialog implements ISongListView{
@@ -32,13 +35,34 @@ public class SongListView extends JDialog implements ISongListView{
         this.controller.setSongListView(this);
         refresh();
         
-        setSize(650, 400);
+        setSize(650, 450);
         setLocationRelativeTo(null);
 
         JScrollPane scrollPane = new JScrollPane(table);
 
         table.setRowHeight(36);
 
+        table.setAutoCreateRowSorter(true);
+        table.getTableHeader().addMouseListener(new MouseAdapter() {
+            boolean ascending = true;
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int column = table.columnAtPoint(e.getPoint());
+                String columnName = table.getColumnName(column);
+
+                if (columnName.equals("Nota")) {
+                    ascending = !ascending; 
+                    List<Song> orderedSongs = null;
+					try {
+						orderedSongs = controller.getSongsOrderedByGrade(ascending);
+					} catch (ModelException e1) {
+					}
+                    tableModel.setSongs(orderedSongs);
+                }
+            }
+        });
+        
         table.setShowGrid(true);
         table.setGridColor(Color.LIGHT_GRAY);
 
@@ -47,7 +71,7 @@ public class SongListView extends JDialog implements ISongListView{
         	SongFormView form = new SongFormView(this, null, controller);
             form.setVisible(true);
         });
-
+        
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem editItem = new JMenuItem("Editar");
         JMenuItem deleteItem = new JMenuItem("Excluir");
@@ -110,6 +134,48 @@ public class SongListView extends JDialog implements ISongListView{
         add(scrollPane, BorderLayout.CENTER);
         add(panel, BorderLayout.SOUTH);
 
+        JPanel filterPanel = new JPanel();
+        filterPanel.setBackground(Color.DARK_GRAY);
+
+        
+        JTextField nameField = new JTextField(8);
+        JTextField artistField = new JTextField(8);
+        JTextField albumField = new JTextField(8);
+
+        JButton filterButton = new JButton("Filtrar");
+        JButton clearButton = new JButton("Limpar");
+
+        filterPanel.add(new JLabel("Nome:"));
+        filterPanel.add(nameField);
+        filterPanel.add(new JLabel("Artista:"));
+        filterPanel.add(artistField);
+        filterPanel.add(new JLabel("Álbum:"));
+        filterPanel.add(albumField);
+        filterPanel.add(filterButton);
+        filterPanel.add(clearButton);
+
+        add(filterPanel, BorderLayout.NORTH);
+
+        filterButton.addActionListener(e -> {
+        	String name = nameField.getText().trim();
+            String artist = artistField.getText().trim();
+            String album = albumField.getText().trim();            
+
+            List<Song> filteredSongs = null;
+			try {
+				filteredSongs = controller.searchSongs(name, artist, album);
+			} catch (ModelException e1) {
+				 JOptionPane.showMessageDialog(this, "Erro na listagem de filtro", "Erro", JOptionPane.ERROR_MESSAGE);
+			}
+            tableModel.setSongs(filteredSongs);
+        });
+
+        clearButton.addActionListener(e -> {
+            nameField.setText("");
+            artistField.setText("");
+            albumField.setText("");
+            refresh();
+        });
     }
 
     @Override

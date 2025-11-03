@@ -173,7 +173,7 @@ public class MySQLArtistDAO implements ArtistDAO{
 			connection = MySQLConnectionFactory.getConnection();
 
 			statement = connection.createStatement();
-			String sqlSeletc = " SELECT * FROM artist";
+			String sqlSeletc = " SELECT * FROM artist order by artist_name asc";
 			
 			rs = statement.executeQuery(sqlSeletc);
 
