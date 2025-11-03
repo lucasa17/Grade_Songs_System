@@ -18,7 +18,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import controller.SongController;
 import model.ModelException;
@@ -39,7 +41,14 @@ public class SongListView extends JDialog implements ISongListView{
         setLocationRelativeTo(null);
 
         JScrollPane scrollPane = new JScrollPane(table);
+        
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        
         table.setRowHeight(36);
 
         table.setAutoCreateRowSorter(true);
@@ -136,7 +145,6 @@ public class SongListView extends JDialog implements ISongListView{
 
         JPanel filterPanel = new JPanel();
         filterPanel.setBackground(Color.DARK_GRAY);
-
         
         JTextField nameField = new JTextField(8);
         JTextField artistField = new JTextField(8);

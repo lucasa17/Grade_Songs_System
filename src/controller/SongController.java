@@ -36,7 +36,6 @@ public class SongController extends JDialog {
         }
     }
 
-    // Salvar ou atualizar uma música
     public void saveOrUpdate(boolean isNew) {
         Song song = songFormView.getSongFromForm();
 
@@ -126,12 +125,11 @@ public class SongController extends JDialog {
     }
     
     public List<Song> searchSongs(String name, String artist, String album) throws ModelException {
-        List<Song> allSongs = songDAO.findAll(); // ou controller.loadSongs(), conforme seu código
+        List<Song> allSongs = songDAO.findAll(); 
         List<Song> filteredSongs = new ArrayList<>();
 
         for (Song s : allSongs) {
             boolean matches = true;
-
             if (name != null && !name.isEmpty() &&
                 !s.getName().toLowerCase().contains(name.toLowerCase())) {
                 matches = false;
@@ -152,7 +150,6 @@ public class SongController extends JDialog {
                 filteredSongs.add(s);
             }
         }
-
         return filteredSongs;
     }
 

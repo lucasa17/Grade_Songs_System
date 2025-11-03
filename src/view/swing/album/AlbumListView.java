@@ -16,7 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import controller.AlbumController;
 import model.Album;
@@ -36,15 +38,19 @@ public class AlbumListView extends JDialog implements IAlbumListView{
         setLocationRelativeTo(null);
 
         JScrollPane scrollPane = new JScrollPane(table);
-
         table.setRowHeight(36);
-
         table.setShowGrid(true);
         table.setGridColor(Color.LIGHT_GRAY);
 
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
         JButton addButton = new JButton("Adicionar Coleção");
         addButton.addActionListener(e -> {
-        	AlbumFormView form = new AlbumFormView(this, null, controller);
+            AlbumFormView form = new AlbumFormView(this, null, controller);
             form.setVisible(true);
         });
 

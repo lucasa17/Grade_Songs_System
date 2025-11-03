@@ -18,6 +18,8 @@ public class MainView extends JFrame {
     private UserController controller;
 
 	public MainView() {
+        UserController controller = new UserController();
+
         setTitle("Grade Songs System");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -46,15 +48,24 @@ public class MainView extends JFrame {
         menuBar.add(Box.createHorizontalGlue());
 
         // Menu "Sair" alinhado à direita
-        /*JMenu menuSair = new JMenu("...");
-        JMenuItem sairItem = new JMenuItem("Fechar o sistema");
-        sairItem.addActionListener(e -> System.exit(0));
-        menuSair.add(sairItem);
+        JMenu menuSair = new JMenu("...");
+        
+        JMenuItem sairItem = new JMenuItem("Excluir conta");
+
+        sairItem.addActionListener(e -> {
+	        int confirm = JOptionPane.showConfirmDialog(this, 
+	             "Deseja excluir sua conta?", "Confirmação", JOptionPane.YES_NO_OPTION);
+	         
+	        if (confirm == JOptionPane.YES_OPTION) {
+	             controller.deleteUser(Session.getLoggedUser());
+	             System.exit(0); 
+	         }
+        });   
+
         menuBar.add(menuSair);
-		*/
+        menuSair.add(sairItem);
         setJMenuBar(menuBar);
         
-        UserController controller = new UserController();
         String username = controller.searchNameUser(Session.getLoggedUser().getId());
         
         JLabel label = new JLabel("Seja bem-vindo, " + username + "!", SwingConstants.CENTER);

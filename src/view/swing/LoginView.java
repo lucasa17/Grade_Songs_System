@@ -2,12 +2,11 @@ package view.swing;
 
 import javax.swing.*;
 
+import controller.UserController;
 import model.ModelException;
 import model.Session;
 import model.User;
-import model.auth.LoginAuthenticator;
 import model.data.DAOFactory;
-import model.data.DAOUtils;
 import model.data.UserDAO;
 
 import java.awt.*;
@@ -16,6 +15,8 @@ public class LoginView extends JDialog {
     private boolean authenticated = false;
     private final JTextField emailField = new JTextField(20);
     private final JPasswordField passwordField = new JPasswordField(20);
+
+    private UserController controller;
 
     public LoginView() {
         setTitle("Grade Songs System - Login");
@@ -26,12 +27,12 @@ public class LoginView extends JDialog {
         JPanel form = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
-        gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.EAST;
+        gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.WEST;
         form.add(new JLabel("Email:"), gbc);
         gbc.gridx = 1; gbc.anchor = GridBagConstraints.WEST;
         form.add(emailField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1; gbc.anchor = GridBagConstraints.EAST;
+        gbc.gridx = 0; gbc.gridy = 1; gbc.anchor = GridBagConstraints.WEST;
         form.add(new JLabel("Senha:"), gbc);
         gbc.gridx = 1; gbc.anchor = GridBagConstraints.WEST;
         form.add(passwordField, gbc);
@@ -50,23 +51,10 @@ public class LoginView extends JDialog {
             user.setEmail(email);
             user.setPassword(password);
             
-            LoginAuthenticator la = new LoginAuthenticator();
-            boolean auth = false;
-				try {
-					auth = la.autheticathor(user);
-				} catch (ModelException e1) {
-	                JOptionPane.showMessageDialog(this, "Email ou senha inválidos.", "Erro", JOptionPane.ERROR_MESSAGE);
-					e1.printStackTrace();
-				}
+            UserController controller = new UserController();
+            boolean auth = controller.loginCheckPassword(user);
             if (auth) {
-        		UserDAO userDAO = DAOFactory.createUserDAO();
-				int id = 0;
-				try {
-					id = userDAO.findByEmailId(user.getEmail());
-				} catch (ModelException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				int id = controller.loginGetId(user);
 				user.setId(id);
                 Session.setLoggedUser(user);
                 authenticated = true;

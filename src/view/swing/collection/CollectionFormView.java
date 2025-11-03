@@ -1,5 +1,7 @@
 package view.swing.collection;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -16,7 +18,7 @@ import model.Collection;
 import model.Session;
 
 public class CollectionFormView extends JDialog implements ICollectionFormView {
-	 private final JTextField nameField = new JTextField(50);
+	 	private final JTextField nameField = new JTextField(50);
 	    private final JButton saveButton = new JButton("Salvar");
 	    private final JButton closeButton = new JButton("Fechar");
 	    private CollectionController controller;
@@ -34,24 +36,34 @@ public class CollectionFormView extends JDialog implements ICollectionFormView {
 	        this.isNew = (collection == null);
 
 	        setTitle(isNew ? "Nova Coleção" : "Editar Coleção");
-	        setSize(250, 150);
+	        setSize(300, 150);
 	        setLocationRelativeTo(parent);
 	        setLayout(new GridBagLayout());
-	        GridBagConstraints gbc = new GridBagConstraints();
-	        gbc.insets = new Insets(5,5,5,5);
-	        gbc.fill = GridBagConstraints.HORIZONTAL;
+	        setResizable(true);
 
-	        gbc.gridx = 0; gbc.gridy = 0;
+	        GridBagConstraints gbc = new GridBagConstraints();
+	        gbc.insets = new Insets(5, 10, 5, 10);
+	        gbc.fill = GridBagConstraints.HORIZONTAL;
+	        gbc.anchor = GridBagConstraints.WEST;
+	        gbc.weightx = 1.0;
+
+	        gbc.gridx = 0;
+	        gbc.gridy = 0;
 	        add(new JLabel("Nome:"), gbc);
-	        gbc.gridx = 1;
+	        gbc.gridy++;
 	        add(nameField, gbc);
 
-	        JPanel btnPanel = new JPanel();
+	        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
 	        btnPanel.add(saveButton);
 	        btnPanel.add(closeButton);
 
-	        gbc.gridx = 1; gbc.gridy = 1; gbc.gridwidth = 1;
+	        gbc.gridy++;
+	        gbc.fill = GridBagConstraints.NONE;
+	        gbc.anchor = GridBagConstraints.CENTER;
 	        add(btnPanel, gbc);
+
+	        nameField.setPreferredSize(new Dimension(300, 30));
+
 
 	        if (!isNew) 
 	        	setCollectionInForm(collection);

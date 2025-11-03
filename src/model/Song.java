@@ -51,7 +51,7 @@ public class Song {
 	
 	public void validate() {
 		if (name == null || name.isBlank()) {
-			throw new IllegalArgumentException("O nome da Song não pode ser vazio.");
+			throw new IllegalArgumentException("O nome da música não pode ser vazio.");
 		}
 		if (grade < 0) {
 			setGrade(0);
@@ -61,6 +61,9 @@ public class Song {
 		}
 		if (features == null || features.isBlank()) {
 			features = " ";
+		}
+		if(album == null) {
+			throw new IllegalArgumentException("O nome do album não pode ser vazio.");
 		}
 	}
 	

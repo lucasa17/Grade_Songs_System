@@ -1,5 +1,7 @@
 package view.swing.album;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -43,42 +45,53 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
         this.album = album;
         this.isNew = (album == null);
 
-        setTitle(isNew ? "Novo Album" : "Editar Album");
-        setSize(350, 220);
+        setTitle(isNew ? "Novo Álbum" : "Editar Álbum");
+        setSize(450, 350);
         setLocationRelativeTo(parent);
         setLayout(new GridBagLayout());
+        setResizable(true);
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5,5,5,5);
+        gbc.insets = new Insets(5, 10, 5, 10); 
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.weightx = 1.0;
 
-
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         add(new JLabel("Coleção:"), gbc);
-        gbc.gridx = 1;
-        collectionBox.setEditable(true); 
+
+        gbc.gridy++;
+        collectionBox.setEditable(true);
+        collectionBox.setPreferredSize(new Dimension(300, 28));
         add(collectionBox, gbc);
-        
-        gbc.gridx = 0; gbc.gridy = 1;
+
+        gbc.gridy++;
         add(new JLabel("Nome:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridy++;
+        nameField.setPreferredSize(new Dimension(300, 28));
         add(nameField, gbc);
-        
-        gbc.gridx = 0; gbc.gridy = 2;
+
+        gbc.gridy++;
         add(new JLabel("Ano:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridy++;
+        yearField.setPreferredSize(new Dimension(100, 28));
         add(yearField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridy++;
         add(new JLabel("Artista:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridy++;
         artistBox.setEditable(true);
+        artistBox.setPreferredSize(new Dimension(300, 28));
         add(artistBox, gbc);
-        
-        JPanel btnPanel = new JPanel();
+
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         btnPanel.add(saveButton);
         btnPanel.add(closeButton);
 
-        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
+        gbc.gridy++;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
         add(btnPanel, gbc);
 
         if (!isNew) 

@@ -32,13 +32,11 @@ public class AlbumController extends JDialog  {
         }
     }
     
-    // Salvar ou atualizar
     public void saveOrUpdate(boolean isNew) {
         Album album = albumFormView.getAlbumFromForm();
 
         try {
         	album.validate();    	
-            //album.setCollection(collection);
         } catch (IllegalArgumentException e) {
         	albumFormView.showErrorMessage("Erro de validação: " + e.getMessage());
             return;

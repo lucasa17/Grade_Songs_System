@@ -1,24 +1,20 @@
 package view.swing.song;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.util.List;
 import javax.swing.*;
 
 import controller.SongController;
 import model.Album;
-import model.Artist;
 import model.Song;
 import model.ModelException;
 
 public class SongFormView extends JDialog implements ISongFormView {
 
     private final JComboBox<Album> albumBox = new JComboBox<>();
-    private final JTextField nameField = new JTextField(100);
-    private final JTextField gradeField = new JTextField(3);
-    private final JTextField featureField = new JTextField(100);
+    private final JTextField nameField = new JTextField();
+    private final JTextField gradeField = new JTextField();
+    private final JTextField featureField = new JTextField();
     private final JButton saveButton = new JButton("Salvar");
     private final JButton closeButton = new JButton("Fechar");
 
@@ -34,11 +30,12 @@ public class SongFormView extends JDialog implements ISongFormView {
         this.parent = parent;
         this.song = song;
         this.isNew = (song == null);
-        
+
         setTitle(isNew ? "Nova Música" : "Editar Música");
-        setSize(300, 250);
+        setSize(450, 350);
         setLocationRelativeTo(parent);
         setLayout(new GridBagLayout());
+        setResizable(true);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -46,32 +43,37 @@ public class SongFormView extends JDialog implements ISongFormView {
 
         gbc.gridx = 0; gbc.gridy = 0;
         add(new JLabel("Nome:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridy++;
         add(nameField, gbc);
 
-        gbc.gridx = 0;gbc.gridy = 1;
-        add(new JLabel("Album:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridy++;
+        add(new JLabel("Álbum:"), gbc);
+        gbc.gridy++;
         add(albumBox, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
-        add(new JLabel("Nota:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridy++;
+        add(new JLabel("Nota (0–100):"), gbc);
+        gbc.gridy++;
         add(gradeField, gbc);
 
-        gbc.gridx = 0;gbc.gridy = 3;
+        gbc.gridy++;
         add(new JLabel("Features:"), gbc);
-        gbc.gridx = 1;
+        gbc.gridy++;
         add(featureField, gbc);
 
-        JPanel btnPanel = new JPanel();
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnPanel.add(saveButton);
         btnPanel.add(closeButton);
 
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
+        gbc.gridy++;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
         add(btnPanel, gbc);
+
+        nameField.setPreferredSize(new Dimension(400, 30));
+        albumBox.setPreferredSize(new Dimension(400, 30));
+        gradeField.setPreferredSize(new Dimension(100, 30));
+        featureField.setPreferredSize(new Dimension(400, 30));
 
         if (!isNew) {
             setSongInForm(song);
@@ -92,7 +94,7 @@ public class SongFormView extends JDialog implements ISongFormView {
             }
             albumBox.setEditable(true);
         } catch (ModelException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar albuns: " + e.getMessage(), "Erro",
+            JOptionPane.showMessageDialog(this, "Erro ao carregar álbuns: " + e.getMessage(), "Erro",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -110,22 +112,22 @@ public class SongFormView extends JDialog implements ISongFormView {
             song.setGrade(grade);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this,
-                    "Ano inválido. Digite um número inteiro entre 0 e 100.",
+                    "Nota inválida. Digite um número inteiro entre 0 e 100.",
                     "Erro",
                     JOptionPane.ERROR_MESSAGE);
             return null;
         }
-        
+
         Object selectedAlbumItem = albumBox.getSelectedItem();
         if (selectedAlbumItem instanceof Album) {
             song.setAlbum((Album) selectedAlbumItem);
         }
-        
+
         return song;
     }
 
     @Override
-    public void setSongInForm(Song song) {    	
+    public void setSongInForm(Song song) {
         nameField.setText(song.getName());
         gradeField.setText(String.valueOf(song.getGrade()));
         featureField.setText(song.getFeatures());
@@ -134,8 +136,8 @@ public class SongFormView extends JDialog implements ISongFormView {
         if (songAlbum != null) {
             for (int i = 0; i < albumBox.getItemCount(); i++) {
                 Album a = albumBox.getItemAt(i);
-                if (a.getId() == songAlbum.getId()) { 
-                	albumBox.setSelectedIndex(i);
+                if (a.getId() == songAlbum.getId()) {
+                    albumBox.setSelectedIndex(i);
                     break;
                 }
             }

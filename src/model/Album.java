@@ -65,6 +65,12 @@ public class Album {
 		if (year <=0) {
 			throw new IllegalArgumentException("O ano não pode ser negativo");
 		}
+		if (collection == null) {
+			throw new IllegalArgumentException("O nome da coelção não pode ser vazio.");
+		}
+		if (artist == null) {
+			throw new IllegalArgumentException("O nome do artista não pode ser vazio.");
+		}
 	}
 	
 	@Override

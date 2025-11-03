@@ -39,3 +39,20 @@ create table song(
 	id_album_fk int not null,
 	foreign key (id_album_fk) references album(id_album) on delete cascade on update cascade
 );
+
+DELIMITER //
+CREATE TRIGGER tr_delete_artist_after_album
+AFTER DELETE ON album
+FOR EACH ROW
+BEGIN
+    DECLARE album_count INT;
+    SELECT COUNT(*) INTO album_count
+    FROM album
+    WHERE id_artist_fk = OLD.id_artist_fk;
+
+    IF album_count = 0 THEN
+        DELETE FROM artist
+        WHERE id_artist = OLD.id_artist_fk;
+    END IF;
+END //
+DELIMITER ;
