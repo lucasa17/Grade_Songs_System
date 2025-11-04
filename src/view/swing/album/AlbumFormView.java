@@ -20,9 +20,6 @@ import model.Album;
 import model.Artist;
 import model.Collection;
 import model.ModelException;
-import model.data.ArtistDAO;
-import model.data.CollectionDAO;
-import model.data.DAOFactory;
 
 public class AlbumFormView extends JDialog implements IAlbumFormView {
 	private final JComboBox<Collection> collectionBox = new JComboBox<>();

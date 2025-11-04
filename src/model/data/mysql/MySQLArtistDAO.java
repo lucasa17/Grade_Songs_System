@@ -9,11 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Artist;
-import model.Collection;
 import model.ModelException;
-import model.User;
 import model.data.ArtistDAO;
-import model.data.DAOFactory;
 import model.data.DAOUtils;
 import model.data.mysql.utils.MySQLConnectionFactory;
 

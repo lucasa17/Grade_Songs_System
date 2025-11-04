@@ -1,7 +1,5 @@
 package model;
 
-import java.util.List;
-
 public class Song {
 	private int id;
 	private String name;

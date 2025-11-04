@@ -3,7 +3,6 @@ package model.data;
 import java.util.List;
 
 import model.Album;
-import model.Artist;
 import model.ModelException;
 
 public interface AlbumDAO {

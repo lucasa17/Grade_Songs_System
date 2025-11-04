@@ -13,8 +13,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import controller.AlbumController;
 import model.Album;
 import model.ModelException;
-import model.Song;
-import view.swing.song.SongListView;
 
 public class AlbumListView extends JDialog implements IAlbumListView {
     private AlbumController controller;

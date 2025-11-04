@@ -25,8 +25,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import controller.CollectionController;
 import model.Collection;
 import model.ModelException;
-import model.Song;
-import view.swing.song.SongListView;
 
 public class CollectionListView extends JDialog implements ICollectionListView{
 	private CollectionController controller;

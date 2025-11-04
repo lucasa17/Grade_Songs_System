@@ -4,13 +4,12 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import model.ModelException;
-import model.Song;
 import model.User;
 import model.auth.LoginAuthenticator;
+import model.auth.PasswordHash;
 import model.auth.RegisterAuthenticator;
 import model.data.DAOFactory;
 import model.data.UserDAO;
-import view.swing.MainView;
 
 public class UserController extends JDialog{
 	UserDAO userDAO = DAOFactory.createUserDAO();
@@ -67,4 +66,35 @@ public class UserController extends JDialog{
 		}
     return user.getName();
 	}
+	
+	public User findByEmail(String email) throws ModelException {
+		return userDAO.findUserByEmail(email);
+	}
+	
+	public boolean resetPasswordWithSecurityAnswer(String email, String answer, String newPassword) {
+	    try {
+	        User user = userDAO.findUserByEmail(email);
+	        if (user == null) {
+	            JOptionPane.showMessageDialog(this, "Email não encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
+	            return false;
+	        }
+
+	        if (user.getSecurityAnswer() == null || !user.getSecurityAnswer().equalsIgnoreCase(answer.trim())) {
+	            return false;
+	        }
+	        PasswordHash ph = new PasswordHash();
+	        newPassword = ph.getHash(newPassword);
+	        boolean success = userDAO.updatePassword(email, newPassword);
+	        if (success) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+
+	    } catch (ModelException e) {
+	        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+	}
+
 }

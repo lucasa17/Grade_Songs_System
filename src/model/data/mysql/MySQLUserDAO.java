@@ -4,14 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JOptionPane;
 
 import model.ModelException;
-import model.Session;
 import model.User;
 import model.data.DAOUtils;
 import model.data.UserDAO;
@@ -26,11 +20,13 @@ public class MySQLUserDAO implements UserDAO {
 			connection = MySQLConnectionFactory.getConnection();
 			String sqlIsert = " INSERT INTO "
 					        + " user VALUES "
-					        + " (DEFAULT, ?, ?, ?); ";
+					        + " (DEFAULT, ?, ?, ?, ?, ?); ";
 			preparedStatement = connection.prepareStatement(sqlIsert);
 			preparedStatement.setString(1, user.getName());
 			preparedStatement.setString(2, user.getEmail());
 			preparedStatement.setString(3, user.getPassword());
+			preparedStatement.setString(4, user.getSecurityQuestion());
+			preparedStatement.setString(5, user.getSecurityAnswer());
 			preparedStatement.executeUpdate();
 		} catch (SQLException sqle) {
 			DAOUtils.sqlExceptionTreatement("Erro ao inserir user do BD.", sqle);
@@ -68,6 +64,20 @@ public class MySQLUserDAO implements UserDAO {
 			DAOUtils.close(connection);
 		}		
 	}
+	
+	 public boolean updatePassword(String email, String newPassword) throws ModelException {
+        String sql = "UPDATE user SET user_password = ? WHERE email = ?";
+        try (Connection conn = MySQLConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newPassword);
+            stmt.setString(2, email);
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            throw new ModelException("Erro ao mudar senha: " + e.getMessage());
+        }
+    }
+	 
 	@Override
 	public void delete(User user) throws ModelException {
 		Connection connection = null;
@@ -165,6 +175,27 @@ public class MySQLUserDAO implements UserDAO {
 		return false;
 	}
 	
+	public User findUserByEmail(String email) throws ModelException {
+	    String sql = "SELECT * FROM user WHERE email = ?";
+	    try (Connection conn = MySQLConnectionFactory.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setString(1, email);
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            User user = new User(rs.getInt("id_user"));
+	            user.setName(rs.getString("username"));
+	            user.setEmail(rs.getString("email"));
+	            user.setPassword(rs.getString("user_password"));
+	            user.setSecurityQuestion(rs.getString("security_question"));
+	            user.setSecurityAnswer(rs.getString("security_answer"));
+	            return user;
+	        }
+	        return null;
+	    } catch (SQLException e) {
+	        throw new ModelException("Erro ao buscar user: " + e.getMessage());
+	    }
+	}
+
 	@Override
 	public boolean findByEmailPassword(String email, String password) throws ModelException {
 		Connection connection = null;

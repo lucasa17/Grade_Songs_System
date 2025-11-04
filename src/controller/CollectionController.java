@@ -3,7 +3,6 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Album;
 import model.Collection;
 import model.ModelException;
 import model.Session;

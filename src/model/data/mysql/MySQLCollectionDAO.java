@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Artist;
 import model.Collection;
 import model.ModelException;
 import model.Session;

@@ -12,7 +12,6 @@ import model.Album;
 import model.Artist;
 import model.Collection;
 import model.ModelException;
-import model.Album;
 import model.data.AlbumDAO;
 import model.data.ArtistDAO;
 import model.data.CollectionDAO;

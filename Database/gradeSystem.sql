@@ -6,7 +6,9 @@ create table user(
 	id_user int not null auto_increment primary key,
 	username varchar(100),
     email varchar(100) not null unique,
-    user_password varchar(250) not null
+    user_password varchar(250) not null,
+	security_question VARCHAR(255),
+    security_answer VARCHAR(255)
 );
 
 create table collection(

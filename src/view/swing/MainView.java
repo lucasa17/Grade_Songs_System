@@ -15,8 +15,6 @@ import java.awt.*;
 public class MainView extends JFrame {
     private static final long serialVersionUID = 1L;
 
-    private UserController controller;
-
 	public MainView() {
         UserController controller = new UserController();
 

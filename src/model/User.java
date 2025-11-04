@@ -8,6 +8,8 @@ public class User {
 	private String email;
 	private String password;
 	private List<Collection> collections;
+	private String securityQuestion;
+	private String securityAnswer;
 	
 	public User(int id) {
 		this.id = id;
@@ -51,6 +53,22 @@ public class User {
 
 	public int getId() {
 		return id;
+	}
+	
+	public String getSecurityQuestion() {
+	    return securityQuestion;
+	}
+
+	public void setSecurityQuestion(String securityQuestion) {
+	    this.securityQuestion = securityQuestion;
+	}
+
+	public String getSecurityAnswer() {
+	    return securityAnswer;
+	}
+
+	public void setSecurityAnswer(String securityAnswer) {
+	    this.securityAnswer = securityAnswer;
 	}
 	
 	public void validate() {
