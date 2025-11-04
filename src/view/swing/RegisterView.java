@@ -98,6 +98,7 @@ public class RegisterView extends JDialog {
 
         add(form, BorderLayout.CENTER);
         add(buttons, BorderLayout.SOUTH);
+        pack();
         setLocationRelativeTo(null);
     }
 
