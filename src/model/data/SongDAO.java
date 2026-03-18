@@ -12,4 +12,7 @@ public interface SongDAO {
 	Song findById(int songId) throws ModelException;
 	List<Song> findAllById(int albumId) throws ModelException;
 	List<Song> findAll() throws ModelException;
+	List<Song> findFiltered(String name, String artist, String album) throws ModelException;
+	List<Song> findAllOrdered(String column, boolean ascending) throws ModelException;
+	List<Song> findTopRatedSongs(int limit) throws ModelException;
 }

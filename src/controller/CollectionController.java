@@ -76,25 +76,15 @@ public class CollectionController {
     }
     
     public List<Collection> getCollectionsOrderedByName(boolean ascending) throws ModelException {
-        List<Collection> colelctions = collectionDAO.findAll();
-        colelctions.sort((s1, s2) -> {
-            String n1 = s1.getName();
-            String n2 = s2.getName();
-            return ascending ? n1.compareToIgnoreCase(n2) : n2.compareToIgnoreCase(n1);
-        });
-        return colelctions;
+        return DAOFactory.createCollectionDAO().findAllOrdered("collection_name", ascending);
     }
-    
-    public List<Collection> searchCollections(String name) throws ModelException {
-        List<Collection> allCollections = collectionDAO.findAll();
-        List<Collection> filtered = new ArrayList<>();
 
-        for (Collection c : allCollections) {
-            if (name == null || name.isEmpty() || c.getName().toLowerCase().contains(name.toLowerCase())) {
-                filtered.add(c);
-            }
-        }
-        return filtered;
+    public List<Collection> searchCollections(String name) throws ModelException {
+        return DAOFactory.createCollectionDAO().findFiltered(name);
+    }
+
+    public int getTotalCollections() throws ModelException {
+        return DAOFactory.createCollectionDAO().findAll().size();
     }
 
 }

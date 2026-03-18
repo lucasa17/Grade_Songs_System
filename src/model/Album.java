@@ -58,6 +58,19 @@ public class Album {
 		return id;
 	}
 	
+	public double getAverageRating() {
+	    if (songs == null || songs.isEmpty()) {
+	        return 0;
+	    }
+
+	    int total = 0;
+	    for (Song song : songs) {
+	        total += song.getGrade();
+	    }
+
+	    return total / songs.size();
+	}
+
 	public void validate() {
 		if (name == null || name.isBlank()) {
 			throw new IllegalArgumentException("O nome do album não pode ser vazio.");

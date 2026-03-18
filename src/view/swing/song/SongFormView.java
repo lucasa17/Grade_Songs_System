@@ -16,7 +16,7 @@ public class SongFormView extends JDialog implements ISongFormView {
     private final JTextField gradeField = new JTextField();
     private final JTextField featureField = new JTextField();
     private final JButton saveButton = new JButton("Salvar");
-    private final JButton closeButton = new JButton("Fechar");
+    //private final JButton closeButton = new JButton("Fechar");
 
     private SongController controller;
     private final boolean isNew;
@@ -63,7 +63,7 @@ public class SongFormView extends JDialog implements ISongFormView {
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnPanel.add(saveButton);
-        btnPanel.add(closeButton);
+        //btnPanel.add(closeButton);
 
         gbc.gridy++;
         gbc.fill = GridBagConstraints.NONE;
@@ -83,7 +83,7 @@ public class SongFormView extends JDialog implements ISongFormView {
 
 
         saveButton.addActionListener(e -> controller.saveOrUpdate(isNew));
-        closeButton.addActionListener(e -> close());
+        //closeButton.addActionListener(e -> close());
     }
 
     private void loadAlbums() {
@@ -143,12 +143,28 @@ public class SongFormView extends JDialog implements ISongFormView {
                 }
             }
         }
+        
+    }
+
+    public void presetAlbum(Album album) {
+        albumBox.removeAllItems();
+        albumBox.addItem(album);
+        albumBox.setSelectedItem(album);
+        albumBox.setEnabled(false); 
     }
 
     @Override
     public void showInfoMessage(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Informação", JOptionPane.INFORMATION_MESSAGE);
+        nameField.setText("");
+        gradeField.setText("");
+        featureField.setText("");
+        if (albumBox.isEnabled()) {
+            albumBox.setSelectedIndex(0);
+        }
+        nameField.requestFocus(); 
     }
+
 
     @Override
     public void showErrorMessage(String msg) {

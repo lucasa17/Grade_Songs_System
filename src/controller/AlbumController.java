@@ -16,11 +16,13 @@ import model.data.AlbumDAO;
 import model.data.ArtistDAO;
 import model.data.CollectionDAO;
 import model.data.DAOFactory;
+import model.data.SongDAO;
 import view.swing.album.IAlbumFormView;
 import view.swing.album.IAlbumListView;
 
 public class AlbumController extends JDialog  {
 	private final AlbumDAO albumDAO = DAOFactory.createAlbumDAO();
+	private final SongDAO songDAO = DAOFactory.createSongDAO();
     private IAlbumListView albumListView;
     private IAlbumFormView albumFormView;
 
@@ -141,91 +143,42 @@ public class AlbumController extends JDialog  {
         return collection;
     }
     
-    public List<Album> searchAlbums(String name, String artist, String collection) throws ModelException {
-        List<Album> allAlbums = albumDAO.findAll(); 
-        List<Album> filteredAlbums = new ArrayList<>();
-
-        for (Album a : allAlbums) {
-            boolean matches = true;
-
-            if (name != null && !name.isEmpty() &&
-                !a.getName().toLowerCase().contains(name.toLowerCase())) {
-                matches = false;
-            }
-
-            if (artist != null && !artist.isEmpty() &&
-                (a.getArtist() == null || !a.getArtist().getName().toLowerCase().contains(artist.toLowerCase()))) {
-                matches = false;
-            }
-
-            if (collection != null && !collection.isEmpty() &&
-                (a.getCollection() == null || !a.getCollection().getName().toLowerCase().contains(collection.toLowerCase()))) {
-                matches = false;
-            }
-
-            if (matches) {
-                filteredAlbums.add(a);
-            }
-        }
-
-        return filteredAlbums;
-    }
-    
-    public List<Album> getAlbumsOrderedByYear(boolean ascending) throws ModelException {
-        List<Album> albums = new ArrayList<>(albumDAO.findAll());
-
-        Comparator<Album> gradeComparator = (s1, s2) -> {
-            Double g1 = (double) s1.getYear();
-            Double g2 = (double) s2.getYear();
-
-            return Double.compare(g1, g2);
-        };
-
-        // Critério secundário para empates (nome, case-insensitive) — torna o resultado estável
-        Comparator<Album> nameComparator = Comparator.comparing(
-                s -> s.getName() == null ? "" : s.getName().toLowerCase(),
-                Comparator.naturalOrder()
-        );
-
-        Comparator<Album> fullComparator = gradeComparator.thenComparing(nameComparator);
-
-        albums.sort(fullComparator);
-
-        if (!ascending) {
-            Collections.reverse(albums);
-        }
-
-        return albums;
-    }
-    
     public List<Album> getAlbumsOrderedByName(boolean ascending) throws ModelException {
-        List<Album> albums = albumDAO.findAll();
-        albums.sort((s1, s2) -> {
-            String n1 = s1.getName();
-            String n2 = s2.getName();
-            return ascending ? n1.compareToIgnoreCase(n2) : n2.compareToIgnoreCase(n1);
-        });
-        return albums;
+        return albumDAO.findAllOrdered("album_name", ascending);
     }
 
     public List<Album> getAlbumsOrderedByArtist(boolean ascending) throws ModelException {
-        List<Album> albums = albumDAO.findAll();
-        albums.sort((s1, s2) -> {
-            String a1 = s1.getArtist().getName();
-            String a2 = s2.getArtist().getName();
-            return ascending ? a1.compareToIgnoreCase(a2) : a2.compareToIgnoreCase(a1);
-        });
-        return albums;
+        return albumDAO.findAllOrdered("artist_name", ascending);
+    }
+
+    public List<Album> getAlbumsOrderedByYear(boolean ascending) throws ModelException {
+        return albumDAO.findAllOrdered("album_year", ascending);
     }
 
     public List<Album> getAlbumsOrderedByCollection(boolean ascending) throws ModelException {
-        List<Album> albums = albumDAO.findAll();
-        albums.sort((s1, s2) -> {
-            String f1 = (s1.getCollection().getName() != null) ? s1.getCollection().getName() : "";
-            String f2 = (s2.getCollection().getName() != null) ? s2.getCollection().getName() : "";
-            return ascending ? f1.compareToIgnoreCase(f2) : f2.compareToIgnoreCase(f1);
-        });
-        return albums;
+        return albumDAO.findAllOrdered("collection_name", ascending);
+    }
+
+    public List<Album> searchAlbums(String name, String artist, String collection) throws ModelException {
+        return albumDAO.findFiltered(name, artist, collection);
+    }
+
+    public int getTotalAlbums() throws ModelException {
+        return DAOFactory.createAlbumDAO().findAll().size();
+    }
+
+    public List<Album> findTopRatedAlbums(int limit) throws ModelException {
+        List<Album> allAlbums = albumDAO.findAll();
+
+        for (Album album : allAlbums) {
+            if (album.getSongs() == null || album.getSongs().isEmpty()) {
+                album.setSongs(songDAO.findAllById(album.getId()));
+            }
+        }
+
+        allAlbums.sort((a1, a2) -> Double.compare(a2.getAverageRating(), a1.getAverageRating()));
+
+        return allAlbums.subList(0, Math.min(limit, allAlbums.size()));
     }
 
 }

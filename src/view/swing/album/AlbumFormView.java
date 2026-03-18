@@ -27,7 +27,7 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
 	private final JTextField yearField = new JTextField(4);
 	private final JComboBox<Artist> artistBox = new JComboBox<>();
 	private final JButton saveButton = new JButton("Salvar");
-	private final JButton closeButton = new JButton("Fechar");
+	//private final JButton closeButton = new JButton("Fechar");
 	private AlbumController controller;
 	private final boolean isNew;
 	private final AlbumListView parent;
@@ -83,7 +83,7 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         btnPanel.add(saveButton);
-        btnPanel.add(closeButton);
+        //btnPanel.add(closeButton);
 
         gbc.gridy++;
         gbc.fill = GridBagConstraints.NONE;
@@ -97,7 +97,7 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
         loadArtists();
 
         saveButton.addActionListener(e -> controller.saveOrUpdate(isNew));
-        closeButton.addActionListener(e -> close());
+        //closeButton.addActionListener(e -> close());
     }
 
     private void loadCollections() {
@@ -217,6 +217,13 @@ public class AlbumFormView extends JDialog implements IAlbumFormView {
                 }
             }
         }
+    }
+
+    public void setPreSelectedCollection(Collection collection) {
+        collectionBox.removeAllItems();
+        collectionBox.addItem(collection);
+        collectionBox.setSelectedItem(collection);
+        collectionBox.setEnabled(false); // trava para não mudar
     }
 
     @Override

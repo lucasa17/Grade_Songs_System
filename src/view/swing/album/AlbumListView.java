@@ -85,8 +85,10 @@ public class AlbumListView extends JDialog implements IAlbumListView {
         });
 
         JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem addSongItem = new JMenuItem("Adicionar Música");
         JMenuItem editItem = new JMenuItem("Editar");
         JMenuItem deleteItem = new JMenuItem("Excluir");
+        popupMenu.add(addSongItem);
         popupMenu.add(editItem);
         popupMenu.add(deleteItem);
 
@@ -109,6 +111,22 @@ public class AlbumListView extends JDialog implements IAlbumListView {
 
             private void showPopup(MouseEvent e) {
                 popupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+
+        addSongItem.addActionListener(e -> {
+            int viewRow = table.getSelectedRow();
+            if (viewRow >= 0) {
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                Album album = tableModel.getAlbumAt(modelRow);
+
+                controller.SongController songController = new controller.SongController();
+
+                view.swing.song.SongFormView form = new view.swing.song.SongFormView(null, null, songController);
+
+                form.presetAlbum(album);
+
+                form.setVisible(true);
             }
         });
 

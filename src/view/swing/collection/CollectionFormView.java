@@ -20,7 +20,7 @@ import model.Session;
 public class CollectionFormView extends JDialog implements ICollectionFormView {
 	 	private final JTextField nameField = new JTextField(50);
 	    private final JButton saveButton = new JButton("Salvar");
-	    private final JButton closeButton = new JButton("Fechar");
+	    //private final JButton closeButton = new JButton("Fechar");
 	    private CollectionController controller;
 	    private final boolean isNew;
 	    private final CollectionListView parent;
@@ -55,7 +55,7 @@ public class CollectionFormView extends JDialog implements ICollectionFormView {
 
 	        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
 	        btnPanel.add(saveButton);
-	        btnPanel.add(closeButton);
+	        //btnPanel.add(closeButton);
 
 	        gbc.gridy++;
 	        gbc.fill = GridBagConstraints.NONE;
@@ -69,7 +69,7 @@ public class CollectionFormView extends JDialog implements ICollectionFormView {
 	        	setCollectionInForm(collection);
 
 	        saveButton.addActionListener(e -> controller.saveOrUpdate(isNew));
-	        closeButton.addActionListener(e -> close());
+	        //closeButton.addActionListener(e -> close());
 	    }
 
 	    @Override

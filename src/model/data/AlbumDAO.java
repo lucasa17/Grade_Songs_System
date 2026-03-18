@@ -14,4 +14,7 @@ public interface AlbumDAO {
 	Album findById(int albumId) throws ModelException;
 	List<Album> findAllById(int collectionId) throws ModelException;
 	List<Album> findAll() throws ModelException;
+	List<Album> findAllOrdered(String column, boolean ascending) throws ModelException;
+	List<Album> findFiltered(String name, String artist, String collection) throws ModelException;
+	List<Album> findTopRatedAlbums(int limit) throws ModelException;
 }

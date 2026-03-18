@@ -91,8 +91,10 @@ public class CollectionListView extends JDialog implements ICollectionListView{
         });
 
         JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem addAlbumItem = new JMenuItem("Adicionar Álbum");
         JMenuItem editItem = new JMenuItem("Editar");
         JMenuItem deleteItem = new JMenuItem("Excluir");
+        popupMenu.add(addAlbumItem);
         popupMenu.add(editItem);
         popupMenu.add(deleteItem);
 
@@ -122,6 +124,28 @@ public class CollectionListView extends JDialog implements ICollectionListView{
                 popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
+
+        addAlbumItem.addActionListener(e -> {
+            int viewRow = table.getSelectedRow();
+            if (viewRow >= 0) {
+                int modelRow = table.convertRowIndexToModel(viewRow);
+                Collection collection = tableModel.getCollectionAt(modelRow);
+
+                try {
+                    controller.AlbumController albumController = new controller.AlbumController();
+                    view.swing.album.AlbumFormView form = new view.swing.album.AlbumFormView(null, null, albumController);
+
+                    form.setPreSelectedCollection(collection);
+
+                    form.setVisible(true);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this,
+                        "Erro ao abrir formulário de álbum: " + ex.getMessage(),
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
 
         editItem.addActionListener(e -> {
         	int viewRow = table.getSelectedRow();

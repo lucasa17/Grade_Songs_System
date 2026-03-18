@@ -13,5 +13,7 @@ public interface CollectionDAO {
 	Collection findByName(String collectionName) throws ModelException;
 	boolean searchByName(String collectionName) throws ModelException;
 	List<Collection> findAll() throws ModelException;
+	List<Collection> findFiltered(String name) throws ModelException;
+	List<Collection> findAllOrdered(String column, boolean ascending) throws ModelException;
 }
 	

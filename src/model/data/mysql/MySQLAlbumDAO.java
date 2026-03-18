@@ -276,4 +276,93 @@ public class MySQLAlbumDAO implements AlbumDAO{
 		}
 		return false;
 	}
+	
+	@Override
+	public List<Album> findAllOrdered(String column, boolean ascending) throws ModelException {
+        String order = ascending ? "ASC" : "DESC";
+
+        String validColumn;
+        switch (column) {
+            case " album_name": validColumn = "a.album_name"; break;
+            case " artist_name": validColumn = "ar.artist_name"; break;
+            case " album_year": validColumn = "a.album_year"; break;
+            case " collection_name": validColumn = "c.collection_name"; break;
+            default: validColumn = " a.album_name";
+        }
+
+        String sql = " SELECT a.*, ar.id_artist, ar.artist_name, c.id_collection, c.collection_name"
+        		+ " FROM album a"
+        		+ " JOIN artist ar ON a.id_artist_fk = ar.id_artist"
+        		+ " JOIN collection c ON a.id_collection_fk = c.id_collection"
+        		+ " ORDER BY " + validColumn + " " + order;
+
+        try (Connection conn = MySQLConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            List<Album> albums = new ArrayList<>();
+            while (rs.next()) {
+                albums.add(extractAlbum(rs));
+            }
+            return albums;
+
+        } catch (SQLException e) {
+            throw new ModelException("Erro ao ordenar álbuns: " + e.getMessage());
+        }
+    }
+
+	@Override
+	public List<Album> findFiltered(String name, String artist, String collection) throws ModelException {
+	    String sql = "SELECT a.*, ar.id_artist, ar.artist_name, c.id_collection, c.collection_name"
+	    		+ " FROM album a"
+	    		+ " JOIN artist ar ON a.id_artist_fk = ar.id_artist"
+	    		+ " JOIN collection c ON a.id_collection_fk = c.id_collection"
+	    		+ " WHERE a.album_name LIKE ? AND ar.artist_name LIKE ? AND c.collection_name LIKE ?"
+	    		+ " ORDER BY a.album_name ASC ";
+
+	    try (Connection conn = MySQLConnectionFactory.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setString(1, "%" + name + "%");
+	        stmt.setString(2, "%" + artist + "%");
+	        stmt.setString(3, "%" + collection + "%");
+
+	        ResultSet rs = stmt.executeQuery();
+	        List<Album> albums = new ArrayList<>();
+
+	        while (rs.next()) {
+	            albums.add(extractAlbum(rs));
+	        }
+
+	        return albums;
+
+	    } catch (SQLException e) {
+	        throw new ModelException("Erro ao filtrar álbuns: " + e.getMessage());
+	    }
+	}
+
+	@Override
+	public List<Album> findTopRatedAlbums(int limit) throws ModelException {
+	        List<Album> allAlbums = findAll(); 
+	        allAlbums.sort((a1, a2) -> Double.compare(a2.getAverageRating(), a1.getAverageRating()));
+	        return allAlbums.subList(0, Math.min(limit, allAlbums.size()));
+	}
+	 
+    private Album extractAlbum(ResultSet rs) throws SQLException {
+        Artist artist = new Artist(rs.getInt("id_artist"));
+        artist.setName(rs.getString("artist_name"));
+
+        Collection collection = new Collection(rs.getInt("id_collection"));
+        collection.setName(rs.getString("collection_name"));
+
+        Album album = new Album(rs.getInt("id_album"));
+        album.setName(rs.getString("album_name"));
+        album.setYear(rs.getInt("album_year"));
+        album.setArtist(artist);
+        album.setCollection(collection);
+
+        return album;
+    }
+
+   
 }

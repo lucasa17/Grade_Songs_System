@@ -232,4 +232,53 @@ public class MySQLCollectionDAO implements CollectionDAO{
 		return false;
 	}
 
+	public List<Collection> findAllOrdered(String column, boolean ascending) throws ModelException {
+	    String order = ascending ? "ASC" : "DESC";
+	    String validColumn;
+
+	    switch (column) {
+	        case "collection_name": validColumn = "collection_name"; break;
+	        default: validColumn = "collection_name";
+	    }
+
+	    String sql = "SELECT * FROM collection ORDER BY " + validColumn + " " + order;
+
+	    try (Connection conn = MySQLConnectionFactory.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql);
+	         ResultSet rs = stmt.executeQuery()) {
+
+	        List<Collection> collections = new ArrayList<>();
+	        while (rs.next()) {
+	            Collection c = new Collection(rs.getInt("id_collection"));
+	            c.setName(rs.getString("collection_name"));
+	            collections.add(c);
+	        }
+	        return collections;
+	    } catch (SQLException e) {
+	        throw new ModelException("Erro ao ordenar coleções: " + e.getMessage());
+	    }
+	}
+
+	public List<Collection> findFiltered(String name) throws ModelException {
+	    String sql = "SELECT * FROM collection WHERE collection_name LIKE ? ORDER BY collection_name ASC";
+
+	    try (Connection conn = MySQLConnectionFactory.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setString(1, "%" + name + "%");
+	        ResultSet rs = stmt.executeQuery();
+
+	        List<Collection> collections = new ArrayList<>();
+	        while (rs.next()) {
+	            Collection c = new Collection(rs.getInt("id_collection"));
+	            c.setName(rs.getString("collection_name"));
+	            collections.add(c);
+	        }
+	        return collections;
+
+	    } catch (SQLException e) {
+	        throw new ModelException("Erro ao filtrar coleções: " + e.getMessage());
+	    }
+	}
+
 }

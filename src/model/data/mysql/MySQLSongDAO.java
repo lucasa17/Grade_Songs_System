@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Album;
+import model.Artist;
 import model.ModelException;
 import model.Song;
 import model.data.DAOFactory;
@@ -215,5 +216,157 @@ public class MySQLSongDAO implements SongDAO{
 			songList.add(newSong);
 		}		
 	}
+	
+	@Override
+	public List<Song> findAllOrdered(String column, boolean ascending) throws ModelException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		List<Song> songList = new ArrayList<>();
+
+		String order = ascending ? "ASC" : "DESC";
+		String validColumn;
+
+		switch (column) {
+			case "song_name": validColumn = "s.song_name"; break;
+			case "artist_name": validColumn = "ar.artist_name"; break;
+			case "album_name": validColumn = "a.album_name"; break;
+			case "grade": validColumn = "s.grade"; break;
+			case "feature_name": validColumn = "s.feature_name"; break;
+			default: validColumn = "s.song_name"; break;
+		}
+
+		String sqlSelect =
+			"SELECT s.*, a.id_album, a.album_name, a.album_year, " +
+			"ar.id_artist, ar.artist_name " +
+			"FROM song s " +
+			"JOIN album a ON s.id_album_fk = a.id_album " +
+			"JOIN artist ar ON a.id_artist_fk = ar.id_artist " +
+			"ORDER BY " + validColumn + " " + order + ";";
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+			preparedStatement = connection.prepareStatement(sqlSelect);
+			rs = preparedStatement.executeQuery();
+
+			while (rs.next()) {
+				songList.add(extractSong(rs));
+			}
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao ordenar músicas do BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+
+		return songList;
+	}
+
+	@Override
+	public List<Song> findFiltered(String name, String artist, String album) throws ModelException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		List<Song> songList = new ArrayList<>();
+
+		String sqlSelect =
+				  "SELECT s.*, a.id_album, a.album_name, a.album_year, " +
+				  "ar.id_artist, ar.artist_name " +
+				  "FROM song s " +
+				  "JOIN album a ON s.id_album_fk = a.id_album " +
+				  "JOIN artist ar ON a.id_artist_fk = ar.id_artist " +
+				  "WHERE s.song_name LIKE ? " +
+				  "AND ar.artist_name LIKE ? " +
+				  "AND a.album_name LIKE ? " +
+				  "ORDER BY s.song_name ASC;";
+
+
+		try {
+			connection = MySQLConnectionFactory.getConnection();
+			preparedStatement = connection.prepareStatement(sqlSelect);
+			preparedStatement.setString(1, "%" + name + "%");
+			preparedStatement.setString(2, "%" + artist + "%");
+			preparedStatement.setString(3, "%" + album + "%");
+
+			rs = preparedStatement.executeQuery();
+
+			while (rs.next()) {
+				songList.add(extractSong(rs));
+			}
+		} catch (SQLException sqle) {
+			DAOUtils.sqlExceptionTreatement("Erro ao filtrar músicas do BD.", sqle);
+		} finally {
+			DAOUtils.close(rs);
+			DAOUtils.close(preparedStatement);
+			DAOUtils.close(connection);
+		}
+
+		return songList;
+	}
+
+	private Song extractSong(ResultSet rs) throws SQLException {
+	    int albumId = rs.getInt("id_album");
+	    Album album = new Album(albumId);
+	    album.setName(rs.getString("album_name"));
+	    album.setYear(rs.getInt("album_year"));
+
+	    int artistId = rs.getInt("id_artist");
+	    String artistName = null;
+	    try {
+	        artistName = rs.getString("artist_name");
+	    } catch (SQLException ignored) {
+	    }
+
+	    Artist artist = new Artist(artistId);
+	    artist.setName(artistName);
+	    album.setArtist(artist);
+
+	    Song s = new Song(rs.getInt("id_song"));
+	    s.setName(rs.getString("song_name"));
+	    s.setGrade(rs.getInt("grade"));
+	    s.setFeatures(rs.getString("feature_name"));
+	    s.setAlbum(album);
+
+	    return s;
+	}
+
+	
+	@Override
+	public List<Song> findTopRatedSongs(int limit) throws ModelException {
+	    Connection connection = null;
+	    PreparedStatement preparedStatement = null;
+	    ResultSet rs = null;
+	    List<Song> songList = new ArrayList<>();
+
+	    String sqlSelect =
+	        "SELECT s.*, a.id_album, a.album_name, a.album_year, ar.id_artist, ar.artist_name " +
+	        "FROM song s " +
+	        "JOIN album a ON s.id_album_fk = a.id_album " +
+	        "JOIN artist ar ON a.id_artist_fk = ar.id_artist " +
+	        "ORDER BY s.grade DESC, s.song_name ASC " +
+	        "LIMIT ?;";
+
+	    try {
+	        connection = MySQLConnectionFactory.getConnection();
+	        preparedStatement = connection.prepareStatement(sqlSelect);
+	        preparedStatement.setInt(1, limit);
+	        rs = preparedStatement.executeQuery();
+
+	        while (rs.next()) {
+	            songList.add(extractSong(rs));
+	        }
+	    } catch (SQLException sqle) {
+	        DAOUtils.sqlExceptionTreatement("Erro ao buscar músicas mais bem avaliadas.", sqle);
+	    } finally {
+	        DAOUtils.close(rs);
+	        DAOUtils.close(preparedStatement);
+	        DAOUtils.close(connection);
+	    }
+
+	    return songList;
+	}
+
+
 
 }
