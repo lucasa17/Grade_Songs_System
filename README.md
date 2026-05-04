@@ -21,7 +21,7 @@ O **Grade Songs System** é uma aplicação desktop desenvolvida em **Java (Swin
   - Ordenação de músicas por notas (crescente ou decrescente).
   - Visualização fácil das músicas mais bem avaliadas.
  
-  - ## 🧩 Tecnologias Utilizadas
+## 🧩 Tecnologias Utilizadas
 
 - **Java 17+**
 - **Swing (Interface Gráfica)**
